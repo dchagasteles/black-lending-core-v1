@@ -15,14 +15,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cryptotechmaker/blacksmith.git"
+    "url": "git+https://github.com/conlotor/warp-blacksmith.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/cryptotechmaker/blacksmith/issues"
+    "url": "https://github.com/conlotor/warp-blacksmith/issues"
   },
-  "homepage": "https://github.com/cryptotechmaker/blacksmith#readme",
+  "homepage": "https://github.com/conlotor/warp-blacksmith#readme",
   "dependencies": {
     "@openzeppelin/contracts": "4.0.0-rc.0",
     "@uniswap/lib": "^4.0.1-alpha",
