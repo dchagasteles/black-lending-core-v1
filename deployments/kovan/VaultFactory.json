@@ -1,0 +1,204 @@
+{
+  "address": "0x1424AF3f70eA86898213C06Be7179Ad602FEc7dD",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_owner",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_vaultLogic",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "vault",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "created",
+          "type": "uint256"
+        }
+      ],
+      "name": "NewVault",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "vault",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "created",
+          "type": "uint256"
+        }
+      ],
+      "name": "VaultUpdated",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_flashLoanRate",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "_vaultOwner",
+          "type": "address"
+        }
+      ],
+      "name": "createUpgradableVault",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "proxy",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_newVault",
+          "type": "address"
+        }
+      ],
+      "name": "updateVaultLogic",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "vaultLogic",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0xb2c72ffa2003aff7bd74ef90661a4a7e0ab32c555b5de028f9cedb1a1347bdaf",
+  "receipt": {
+    "to": "0x4e59b44847b379578588920cA78FbF26c0B4956C",
+    "from": "0xF5B35b607377850696cAF2ac4841D61E7d825a3b",
+    "contractAddress": null,
+    "transactionIndex": 4,
+    "gasUsed": "451382",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0x1a9b254d998c83cc9b3f9914d9b30f3d93db32dd8f00304f5f2875da11024c1c",
+    "transactionHash": "0xb2c72ffa2003aff7bd74ef90661a4a7e0ab32c555b5de028f9cedb1a1347bdaf",
+    "logs": [],
+    "blockNumber": 31808886,
+    "cumulativeGasUsed": "1042748",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [
+    "0xF5B35b607377850696cAF2ac4841D61E7d825a3b",
+    "0x76aC1ddb24968a73cC8ffB08914D3Ce5e6E486AA"
+  ],
+  "solcInputHash": "ffdeacf776442ab7ecf77b730bcae001",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.1+commit.df193b15\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_vaultLogic\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"vault\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"created\",\"type\":\"uint256\"}],\"name\":\"NewVault\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"vault\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"created\",\"type\":\"uint256\"}],\"name\":\"VaultUpdated\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_flashLoanRate\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"_vaultOwner\",\"type\":\"address\"}],\"name\":\"createUpgradableVault\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"proxy\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_newVault\",\"type\":\"address\"}],\"name\":\"updateVaultLogic\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"vaultLogic\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"author\":\"@samparsky\",\"kind\":\"dev\",\"methods\":{\"createUpgradableVault(uint256,address)\":{\"params\":{\"_flashLoanRate\":\"flash loan rate to charge\",\"_vaultOwner\":\"address allowed to perform vault `admin` functions\"}},\"updateVaultLogic(address)\":{\"params\":{\"_newVault\":\"the address of the new vault logic\"}}},\"stateVariables\":{\"owner\":{\"details\":\"owner that can update vault logic address\"},\"vaultLogic\":{\"details\":\"vault logic address\"}},\"title\":\"VaultFactory\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"createUpgradableVault(uint256,address)\":{\"notice\":\"create an upgradable vault\"},\"updateVaultLogic(address)\":{\"notice\":\"update the vault logic address\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/VaultFactory.sol\":\"VaultFactory\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":500},\"remappings\":[]},\"sources\":{\"@openzeppelin/contracts/proxy/Proxy.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\npragma solidity ^0.8.0;\\n\\n/**\\n * @dev This abstract contract provides a fallback function that delegates all calls to another contract using the EVM\\n * instruction `delegatecall`. We refer to the second contract as the _implementation_ behind the proxy, and it has to\\n * be specified by overriding the virtual {_implementation} function.\\n *\\n * Additionally, delegation to the implementation can be triggered manually through the {_fallback} function, or to a\\n * different contract through the {_delegate} function.\\n *\\n * The success and return data of the delegated call will be returned back to the caller of the proxy.\\n */\\nabstract contract Proxy {\\n    /**\\n     * @dev Delegates the current call to `implementation`.\\n     *\\n     * This function does not return to its internall call site, it will return directly to the external caller.\\n     */\\n    function _delegate(address implementation) internal virtual {\\n        // solhint-disable-next-line no-inline-assembly\\n        assembly {\\n            // Copy msg.data. We take full control of memory in this inline assembly\\n            // block because it will not return to Solidity code. We overwrite the\\n            // Solidity scratch pad at memory position 0.\\n            calldatacopy(0, 0, calldatasize())\\n\\n            // Call the implementation.\\n            // out and outsize are 0 because we don't know the size yet.\\n            let result := delegatecall(gas(), implementation, 0, calldatasize(), 0, 0)\\n\\n            // Copy the returned data.\\n            returndatacopy(0, 0, returndatasize())\\n\\n            switch result\\n            // delegatecall returns 0 on error.\\n            case 0 { revert(0, returndatasize()) }\\n            default { return(0, returndatasize()) }\\n        }\\n    }\\n\\n    /**\\n     * @dev This is a virtual function that should be overriden so it returns the address to which the fallback function\\n     * and {_fallback} should delegate.\\n     */\\n    function _implementation() internal view virtual returns (address);\\n\\n    /**\\n     * @dev Delegates the current call to the address returned by `_implementation()`.\\n     *\\n     * This function does not return to its internall call site, it will return directly to the external caller.\\n     */\\n    function _fallback() internal virtual {\\n        _beforeFallback();\\n        _delegate(_implementation());\\n    }\\n\\n    /**\\n     * @dev Fallback function that delegates calls to the address returned by `_implementation()`. Will run if no other\\n     * function in the contract matches the call data.\\n     */\\n    fallback () external payable virtual {\\n        _fallback();\\n    }\\n\\n    /**\\n     * @dev Fallback function that delegates calls to the address returned by `_implementation()`. Will run if call data\\n     * is empty.\\n     */\\n    receive () external payable virtual {\\n        _fallback();\\n    }\\n\\n    /**\\n     * @dev Hook that is called before falling back to the implementation. Can happen as part of a manual `_fallback`\\n     * call, or as part of the Solidity `fallback` or `receive` functions.\\n     *\\n     * If overriden should call `super._beforeFallback()`.\\n     */\\n    function _beforeFallback() internal virtual {\\n    }\\n}\\n\",\"keccak256\":\"0xc706395df88dc1d459f21e51c57ab8820af80d1e8c3c14933a651794d78a429f\",\"license\":\"MIT\"},\"@openzeppelin/contracts/token/ERC20/IERC20.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\npragma solidity ^0.8.0;\\n\\n/**\\n * @dev Interface of the ERC20 standard as defined in the EIP.\\n */\\ninterface IERC20 {\\n    /**\\n     * @dev Returns the amount of tokens in existence.\\n     */\\n    function totalSupply() external view returns (uint256);\\n\\n    /**\\n     * @dev Returns the amount of tokens owned by `account`.\\n     */\\n    function balanceOf(address account) external view returns (uint256);\\n\\n    /**\\n     * @dev Moves `amount` tokens from the caller's account to `recipient`.\\n     *\\n     * Returns a boolean value indicating whether the operation succeeded.\\n     *\\n     * Emits a {Transfer} event.\\n     */\\n    function transfer(address recipient, uint256 amount) external returns (bool);\\n\\n    /**\\n     * @dev Returns the remaining number of tokens that `spender` will be\\n     * allowed to spend on behalf of `owner` through {transferFrom}. This is\\n     * zero by default.\\n     *\\n     * This value changes when {approve} or {transferFrom} are called.\\n     */\\n    function allowance(address owner, address spender) external view returns (uint256);\\n\\n    /**\\n     * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.\\n     *\\n     * Returns a boolean value indicating whether the operation succeeded.\\n     *\\n     * IMPORTANT: Beware that changing an allowance with this method brings the risk\\n     * that someone may use both the old and the new allowance by unfortunate\\n     * transaction ordering. One possible solution to mitigate this race\\n     * condition is to first reduce the spender's allowance to 0 and set the\\n     * desired value afterwards:\\n     * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729\\n     *\\n     * Emits an {Approval} event.\\n     */\\n    function approve(address spender, uint256 amount) external returns (bool);\\n\\n    /**\\n     * @dev Moves `amount` tokens from `sender` to `recipient` using the\\n     * allowance mechanism. `amount` is then deducted from the caller's\\n     * allowance.\\n     *\\n     * Returns a boolean value indicating whether the operation succeeded.\\n     *\\n     * Emits a {Transfer} event.\\n     */\\n    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);\\n\\n    /**\\n     * @dev Emitted when `value` tokens are moved from one account (`from`) to\\n     * another (`to`).\\n     *\\n     * Note that `value` may be zero.\\n     */\\n    event Transfer(address indexed from, address indexed to, uint256 value);\\n\\n    /**\\n     * @dev Emitted when the allowance of a `spender` for an `owner` is set by\\n     * a call to {approve}. `value` is the new allowance.\\n     */\\n    event Approval(address indexed owner, address indexed spender, uint256 value);\\n}\\n\",\"keccak256\":\"0xf8e8d118a7a8b2e134181f7da655f6266aa3a0f9134b2605747139fcb0c5d835\",\"license\":\"MIT\"},\"contracts/VaultFactory.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity 0.8.1;\\nimport \\\"./upgradability/UUPSProxy.sol\\\";\\nimport \\\"./interfaces/IBSVault.sol\\\";\\n\\n////////////////////////////////////////////////////////////////////////////////////////////\\n/// @title VaultFactory\\n/// @author @samparsky\\n////////////////////////////////////////////////////////////////////////////////////////////\\n\\ncontract VaultFactory {\\n    /// @dev vault logic address\\n    address public vaultLogic;\\n    /// @dev owner that can update vault logic address\\n    address public immutable owner;\\n\\n    event NewVault(address vault, uint256 created);\\n    event VaultUpdated(address vault, uint256 created);\\n\\n    /// @notice modifier to allow only the owner to call a function\\n    modifier onlyOwner {\\n        require(msg.sender == owner, \\\"ONLY_OWNER\\\");\\n        _;\\n    }\\n\\n    constructor(address _owner, address _vaultLogic) {\\n        require(_vaultLogic != address(0), \\\"INVALID_VAULT\\\");\\n        require(_owner != address(0), \\\"INVALID_OWNER\\\");\\n\\n        owner = _owner;\\n        vaultLogic = _vaultLogic;\\n    }\\n\\n    /// @notice update the vault logic address\\n    /// @param _newVault the address of the new vault logic\\n    function updateVaultLogic(address _newVault) external onlyOwner {\\n        require(_newVault != address(0), \\\"INVALID_VAULT\\\");\\n\\n        vaultLogic = _newVault;\\n        emit VaultUpdated(_newVault, block.timestamp);\\n    }\\n\\n    /// @notice create an upgradable vault\\n    /// @param _flashLoanRate flash loan rate to charge\\n    /// @param _vaultOwner address allowed to perform vault `admin` functions\\n    function createUpgradableVault(uint256 _flashLoanRate, address _vaultOwner)\\n        external\\n        onlyOwner\\n        returns (address proxy)\\n    {\\n        UUPSProxy uupsProxy = new UUPSProxy();\\n        uupsProxy.initializeProxy(vaultLogic);\\n\\n        proxy = address(uupsProxy);\\n        \\n        // initiailize vault & validates the input properties\\n        IBSVault(proxy).initialize(_flashLoanRate, _vaultOwner);\\n\\n        emit NewVault(proxy, block.timestamp);\\n    }\\n}\\n\",\"keccak256\":\"0x3821d80594ccfdd1929f037a17c0358dcfb1c7e6ce7e58fa7731e9f662492563\",\"license\":\"MIT\"},\"contracts/interfaces/IBSVault.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity 0.8.1;\\nimport \\\"@openzeppelin/contracts/token/ERC20/IERC20.sol\\\";\\nimport \\\"./IERC3156FlashLender.sol\\\";\\n\\ninterface IBSVault is IERC3156FlashLender {\\n    // ************** //\\n    // *** EVENTS *** //\\n    // ************** //\\n\\n    /// @notice Emitted on deposit\\n    /// @param token being deposited\\n    /// @param from address making the depsoit\\n    /// @param to address to credit the tokens being deposited\\n    /// @param amount being deposited\\n    /// @param shares the represent the amount deposited in the vault\\n    event Deposit(\\n        IERC20 indexed token,\\n        address indexed from,\\n        address indexed to,\\n        uint256 amount,\\n        uint256 shares\\n    );\\n\\n    /// @notice Emitted on withdraw\\n    /// @param token being deposited\\n    /// @param from address making the depsoit\\n    /// @param to address to credit the tokens being withdrawn\\n    /// @param amount Amount of underlying being withdrawn\\n    /// @param shares the represent the amount withdraw from the vault\\n    event Withdraw(\\n        IERC20 indexed token,\\n        address indexed from,\\n        address indexed to,\\n        uint256 shares,\\n        uint256 amount\\n    );\\n\\n    event Transfer(IERC20 indexed token, address indexed from, address indexed to, uint256 amount);\\n\\n    event FlashLoan(\\n        address indexed borrower,\\n        IERC20 indexed token,\\n        uint256 amount,\\n        uint256 feeAmount,\\n        address indexed receiver\\n    );\\n\\n    event TransferControl(address _newTeam, uint256 timestamp);\\n\\n    event UpdateFlashLoanRate(uint256 newRate);\\n\\n    event Approval(address indexed user, address indexed allowed, bool status);\\n\\n    event OwnershipAccepted(address prevOwner, address newOwner, uint256 timestamp);\\n\\n    event RegisterProtocol(address sender);\\n\\n    event AllowContract(address whitelist, bool status);\\n\\n    event RescueFunds(IERC20 token, uint256 amount);\\n\\n    // ************** //\\n    // *** FUNCTIONS *** //\\n    // ************** //\\n\\n    function initialize(uint256 _flashLoanRate, address _owner) external;\\n\\n    function approveContract(\\n        address _user,\\n        address _contract,\\n        bool _status,\\n        uint8 v,\\n        bytes32 r,\\n        bytes32 s\\n    ) external;\\n\\n    function deposit(\\n        IERC20 _token,\\n        address _from,\\n        address _to,\\n        uint256 _amount\\n    ) external returns (uint256, uint256);\\n\\n    function withdraw(\\n        IERC20 _token,\\n        address _from,\\n        address _to,\\n        uint256 _amount\\n    ) external returns (uint256);\\n\\n    function balanceOf(IERC20, address) external view returns (uint256);\\n\\n    function transfer(\\n        IERC20 _token,\\n        address _from,\\n        address _to,\\n        uint256 _shares\\n    ) external;\\n\\n    function toShare(\\n        IERC20 token,\\n        uint256 amount,\\n        bool ceil\\n    ) external view returns (uint256);\\n\\n    function toUnderlying(IERC20 token, uint256 share) external view returns (uint256);\\n}\\n\",\"keccak256\":\"0xc0323afa216ff7958b03edc38475bd0c8b56c7866a66429bf28debeeea22a3ff\",\"license\":\"MIT\"},\"contracts/interfaces/IERC3156FlashBorrower.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.1;\\n\\ninterface IERC3156FlashBorrower {\\n    /**\\n     * @dev Receive a flash loan.\\n     * @param initiator The initiator of the loan.\\n     * @param token The loan currency.\\n     * @param amount The amount of tokens lent.\\n     * @param fee The additional amount of tokens to repay.\\n     * @param data Arbitrary data structure, intended to contain user-defined parameters.\\n     * @return The keccak256 hash of \\\"ERC3156FlashBorrower.onFlashLoan\\\"\\n     */\\n    function onFlashLoan(\\n        address initiator,\\n        address token,\\n        uint256 amount,\\n        uint256 fee,\\n        bytes calldata data\\n    ) external returns (bytes32);\\n}\\n\",\"keccak256\":\"0xc72afde3ab27c13b3437769c92b10e48dc143565ba2bcf9e78f6713d4695d924\",\"license\":\"MIT\"},\"contracts/interfaces/IERC3156FlashLender.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\npragma solidity 0.8.1;\\nimport \\\"./IERC3156FlashBorrower.sol\\\";\\n\\ninterface IERC3156FlashLender {\\n    /**\\n     * @dev The amount of currency available to be lent.\\n     * @param token The loan currency.\\n     * @return The amount of `token` that can be borrowed.\\n     */\\n    function maxFlashLoan(address token) external view returns (uint256);\\n\\n    /**\\n     * @dev The fee to be charged for a given loan.\\n     * @param token The loan currency.\\n     * @param amount The amount of tokens lent.\\n     * @return The amount of `token` to be charged for the loan, on top of the returned principal.\\n     */\\n    function flashFee(address token, uint256 amount) external view returns (uint256);\\n\\n    /**\\n     * @dev Initiate a flash loan.\\n     * @param receiver The receiver of the tokens in the loan, and the receiver of the callback.\\n     * @param token The loan currency.\\n     * @param amount The amount of tokens lent.\\n     * @param data Arbitrary data structure, intended to contain user-defined parameters.\\n     */\\n    function flashLoan(\\n        IERC3156FlashBorrower receiver,\\n        address token,\\n        uint256 amount,\\n        bytes calldata data\\n    ) external returns (bool);\\n}\\n\",\"keccak256\":\"0x381589754fc2917129ff2192df23588009fecb73f6df12bc9218dd731d25758d\",\"license\":\"MIT\"},\"contracts/upgradability/UUPSProxy.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity 0.8.1;\\n\\nimport {UUPSUtils} from \\\"./UUPSUtils.sol\\\";\\nimport {Proxy} from \\\"@openzeppelin/contracts/proxy/Proxy.sol\\\";\\n\\n/**\\n * @dev UUPS (Universal Upgradeable Proxy Standard) Proxy\\n *\\n * NOTE:\\n * - Compliant with [Universal Upgradeable Proxy Standard](https://eips.ethereum.org/EIPS/eip-1822)\\n * - Compiiant with [Standard Proxy Storage Slots](https://eips.ethereum.org/EIPS/eip-1967)\\n * - Implements delegation of calls to other contracts, with proper forwarding of\\n *   return values and bubbling of failures.\\n * - It defines a fallback function that delegates all calls to the implementation.\\n */\\ncontract UUPSProxy is Proxy {\\n    /**\\n     * @dev Proxy initialization function.\\n     *      This should only be called once and it is permission-less.\\n     * @param initialAddress Initial logic contract code address to be used.\\n     */\\n    function initializeProxy(address initialAddress) external {\\n        require(initialAddress != address(0), \\\"UUPSProxy: zero address\\\");\\n        require(UUPSUtils.implementation() == address(0), \\\"UUPSProxy: already initialized\\\");\\n        UUPSUtils.setImplementation(initialAddress);\\n    }\\n\\n    /// @dev Proxy._implementation implementation\\n    function _implementation() internal view virtual override returns (address) {\\n        return UUPSUtils.implementation();\\n    }\\n}\\n\",\"keccak256\":\"0xb942e57c80fec51fb59caee747967c7ee15137f19187bf73475f1439327c84c2\",\"license\":\"MIT\"},\"contracts/upgradability/UUPSUtils.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity 0.8.1;\\n\\n/**\\n * @title UUPS (Universal Upgradeable Proxy Standard) Shared Library\\n */\\nlibrary UUPSUtils {\\n    /**\\n     * @dev Implementation slot constant.\\n     * Using https://eips.ethereum.org/EIPS/eip-1967 standard\\n     * Storage slot 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc\\n     * (obtained as bytes32(uint256(keccak256('eip1967.proxy.implementation')) - 1)).\\n     */\\n    bytes32 internal constant _IMPLEMENTATION_SLOT =\\n        0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc;\\n\\n    /// @dev Get implementation address.\\n    function implementation() internal view returns (address impl) {\\n        assembly {\\n            // solium-disable-line\\n            impl := sload(_IMPLEMENTATION_SLOT)\\n        }\\n    }\\n\\n    /// @dev Set new implementation address.\\n    function setImplementation(address codeAddress) internal {\\n        assembly {\\n            // solium-disable-line\\n            sstore(_IMPLEMENTATION_SLOT, codeAddress)\\n        }\\n    }\\n}\\n\",\"keccak256\":\"0x125441f574989269c1e471e61085d33d064903e006f8b29e81eba2b79e2be1da\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x60a060405234801561001057600080fd5b5060405161083338038061083383398101604081905261002f916100d7565b6001600160a01b03811661005e5760405162461bcd60e51b815260040161005590610130565b60405180910390fd5b6001600160a01b0382166100845760405162461bcd60e51b815260040161005590610109565b60609190911b6001600160601b031916608052600080546001600160a01b0319166001600160a01b03909216919091179055610157565b80516001600160a01b03811681146100d257600080fd5b919050565b600080604083850312156100e9578182fd5b6100f2836100bb565b9150610100602084016100bb565b90509250929050565b6020808252600d908201526c24a72b20a624a22fa7aba722a960991b604082015260600190565b6020808252600d908201526c1253959053125117d590555315609a1b604082015260600190565b60805160601c6106b16101826000396000818160ac0152818161023001526102fa01526106b16000f3fe608060405234801561001057600080fd5b506004361061004c5760003560e01c806321f64958146100515780638648cbc71461007a5780638da5cb5b1461008f578063b078147a14610097575b600080fd5b61006461005f366004610375565b61009f565b60405161007191906103a0565b60405180910390f35b61008d610088366004610354565b610225565b005b6100646102f8565b61006461031c565b6000336001600160a01b037f000000000000000000000000000000000000000000000000000000000000000016146100f25760405162461bcd60e51b81526004016100e9906103f4565b60405180910390fd5b60006040516101009061032b565b604051809103906000f08015801561011c573d6000803e3d6000fd5b50600054604051634a0687ef60e01b81529192506001600160a01b0380841692634a0687ef926101509216906004016103a0565b600060405180830381600087803b15801561016a57600080fd5b505af115801561017e573d6000803e3d6000fd5b50505050809150816001600160a01b031663da35a26f85856040518363ffffffff1660e01b81526004016101b3929190610418565b600060405180830381600087803b1580156101cd57600080fd5b505af11580156101e1573d6000803e3d6000fd5b505050507fd121adb44c5268742cd3af919e1df1437aa697b3306c1e6e133e9c97cc65bfc882426040516102169291906103b4565b60405180910390a15092915050565b336001600160a01b037f0000000000000000000000000000000000000000000000000000000000000000161461026d5760405162461bcd60e51b81526004016100e9906103f4565b6001600160a01b0381166102935760405162461bcd60e51b81526004016100e9906103cd565b6000805473ffffffffffffffffffffffffffffffffffffffff19166001600160a01b0383161790556040517ffa4919aba5648c94384952b8039d70ba764ab39a8d0deb9943731ccccebaf331906102ed90839042906103b4565b60405180910390a150565b7f000000000000000000000000000000000000000000000000000000000000000081565b6000546001600160a01b031681565b61024c8061043083390190565b80356001600160a01b038116811461034f57600080fd5b919050565b600060208284031215610365578081fd5b61036e82610338565b9392505050565b60008060408385031215610387578081fd5b8235915061039760208401610338565b90509250929050565b6001600160a01b0391909116815260200190565b6001600160a01b03929092168252602082015260400190565b6020808252600d908201526c1253959053125117d590555315609a1b604082015260600190565b6020808252600a908201526927a7262cafa7aba722a960b11b604082015260600190565b9182526001600160a01b031660208201526040019056fe608060405234801561001057600080fd5b5061022c806100206000396000f3fe6080604052600436106100225760003560e01c80634a0687ef1461003957610031565b366100315761002f610059565b005b61002f610059565b34801561004557600080fd5b5061002f61005436600461015a565b610073565b610061610071565b61007161006c6100de565b6100ed565b565b6001600160a01b0381166100a25760405162461bcd60e51b8152600401610099906101bf565b60405180910390fd5b60006100ac610111565b6001600160a01b0316146100d25760405162461bcd60e51b815260040161009990610188565b6100db81610136565b50565b60006100e8610111565b905090565b3660008037600080366000845af43d6000803e80801561010c573d6000f35b3d6000fd5b7f360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc5490565b7f360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc55565b60006020828403121561016b578081fd5b81356001600160a01b0381168114610181578182fd5b9392505050565b6020808252601e908201527f5555505350726f78793a20616c726561647920696e697469616c697a65640000604082015260600190565b60208082526017908201527f5555505350726f78793a207a65726f206164647265737300000000000000000060408201526060019056fea2646970667358221220aa71d99a9432d5a0d3901c5894a84a38e1098061c2c4880e3077ef5d2abffc2864736f6c63430008010033a264697066735822122068acb06ae6a221bc7255b8c6e8329f1ada23d6ba5e5b38825f8f3b3ae129b6bb64736f6c63430008010033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b506004361061004c5760003560e01c806321f64958146100515780638648cbc71461007a5780638da5cb5b1461008f578063b078147a14610097575b600080fd5b61006461005f366004610375565b61009f565b60405161007191906103a0565b60405180910390f35b61008d610088366004610354565b610225565b005b6100646102f8565b61006461031c565b6000336001600160a01b037f000000000000000000000000000000000000000000000000000000000000000016146100f25760405162461bcd60e51b81526004016100e9906103f4565b60405180910390fd5b60006040516101009061032b565b604051809103906000f08015801561011c573d6000803e3d6000fd5b50600054604051634a0687ef60e01b81529192506001600160a01b0380841692634a0687ef926101509216906004016103a0565b600060405180830381600087803b15801561016a57600080fd5b505af115801561017e573d6000803e3d6000fd5b50505050809150816001600160a01b031663da35a26f85856040518363ffffffff1660e01b81526004016101b3929190610418565b600060405180830381600087803b1580156101cd57600080fd5b505af11580156101e1573d6000803e3d6000fd5b505050507fd121adb44c5268742cd3af919e1df1437aa697b3306c1e6e133e9c97cc65bfc882426040516102169291906103b4565b60405180910390a15092915050565b336001600160a01b037f0000000000000000000000000000000000000000000000000000000000000000161461026d5760405162461bcd60e51b81526004016100e9906103f4565b6001600160a01b0381166102935760405162461bcd60e51b81526004016100e9906103cd565b6000805473ffffffffffffffffffffffffffffffffffffffff19166001600160a01b0383161790556040517ffa4919aba5648c94384952b8039d70ba764ab39a8d0deb9943731ccccebaf331906102ed90839042906103b4565b60405180910390a150565b7f000000000000000000000000000000000000000000000000000000000000000081565b6000546001600160a01b031681565b61024c8061043083390190565b80356001600160a01b038116811461034f57600080fd5b919050565b600060208284031215610365578081fd5b61036e82610338565b9392505050565b60008060408385031215610387578081fd5b8235915061039760208401610338565b90509250929050565b6001600160a01b0391909116815260200190565b6001600160a01b03929092168252602082015260400190565b6020808252600d908201526c1253959053125117d590555315609a1b604082015260600190565b6020808252600a908201526927a7262cafa7aba722a960b11b604082015260600190565b9182526001600160a01b031660208201526040019056fe608060405234801561001057600080fd5b5061022c806100206000396000f3fe6080604052600436106100225760003560e01c80634a0687ef1461003957610031565b366100315761002f610059565b005b61002f610059565b34801561004557600080fd5b5061002f61005436600461015a565b610073565b610061610071565b61007161006c6100de565b6100ed565b565b6001600160a01b0381166100a25760405162461bcd60e51b8152600401610099906101bf565b60405180910390fd5b60006100ac610111565b6001600160a01b0316146100d25760405162461bcd60e51b815260040161009990610188565b6100db81610136565b50565b60006100e8610111565b905090565b3660008037600080366000845af43d6000803e80801561010c573d6000f35b3d6000fd5b7f360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc5490565b7f360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc55565b60006020828403121561016b578081fd5b81356001600160a01b0381168114610181578182fd5b9392505050565b6020808252601e908201527f5555505350726f78793a20616c726561647920696e697469616c697a65640000604082015260600190565b60208082526017908201527f5555505350726f78793a207a65726f206164647265737300000000000000000060408201526060019056fea2646970667358221220aa71d99a9432d5a0d3901c5894a84a38e1098061c2c4880e3077ef5d2abffc2864736f6c63430008010033a264697066735822122068acb06ae6a221bc7255b8c6e8329f1ada23d6ba5e5b38825f8f3b3ae129b6bb64736f6c63430008010033",
+  "devdoc": {
+    "author": "@samparsky",
+    "kind": "dev",
+    "methods": {
+      "createUpgradableVault(uint256,address)": {
+        "params": {
+          "_flashLoanRate": "flash loan rate to charge",
+          "_vaultOwner": "address allowed to perform vault `admin` functions"
+        }
+      },
+      "updateVaultLogic(address)": {
+        "params": {
+          "_newVault": "the address of the new vault logic"
+        }
+      }
+    },
+    "stateVariables": {
+      "owner": {
+        "details": "owner that can update vault logic address"
+      },
+      "vaultLogic": {
+        "details": "vault logic address"
+      }
+    },
+    "title": "VaultFactory",
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {
+      "createUpgradableVault(uint256,address)": {
+        "notice": "create an upgradable vault"
+      },
+      "updateVaultLogic(address)": {
+        "notice": "update the vault logic address"
+      }
+    },
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [
+      {
+        "astId": 7561,
+        "contract": "contracts/VaultFactory.sol:VaultFactory",
+        "label": "vaultLogic",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_address"
+      }
+    ],
+    "types": {
+      "t_address": {
+        "encoding": "inplace",
+        "label": "address",
+        "numberOfBytes": "20"
+      }
+    }
+  }
+}

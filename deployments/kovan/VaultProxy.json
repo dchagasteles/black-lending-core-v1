@@ -1,0 +1,69 @@
+{
+  "address": "0x67EeB1E1dd79a4ec823256Dd6c5C6474025618f6",
+  "abi": [
+    {
+      "stateMutability": "payable",
+      "type": "fallback"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "initialAddress",
+          "type": "address"
+        }
+      ],
+      "name": "initializeProxy",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "stateMutability": "payable",
+      "type": "receive"
+    }
+  ],
+  "transactionHash": "0x1863129625318864d4c618e226f8c2028219b78f78a9a367675f1e5eb617f030",
+  "receipt": {
+    "to": null,
+    "from": "0xF5B35b607377850696cAF2ac4841D61E7d825a3b",
+    "contractAddress": "0x67EeB1E1dd79a4ec823256Dd6c5C6474025618f6",
+    "transactionIndex": 0,
+    "gasUsed": "173107",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0x5757055e69f004fef672a04058afe1f9e80cf407b3c5aa3f8172cb9e75383a68",
+    "transactionHash": "0x1863129625318864d4c618e226f8c2028219b78f78a9a367675f1e5eb617f030",
+    "logs": [],
+    "blockNumber": 31808599,
+    "cumulativeGasUsed": "173107",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [],
+  "solcInputHash": "ffdeacf776442ab7ecf77b730bcae001",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.1+commit.df193b15\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"stateMutability\":\"payable\",\"type\":\"fallback\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"initialAddress\",\"type\":\"address\"}],\"name\":\"initializeProxy\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"stateMutability\":\"payable\",\"type\":\"receive\"}],\"devdoc\":{\"details\":\"UUPS (Universal Upgradeable Proxy Standard) Proxy NOTE: - Compliant with [Universal Upgradeable Proxy Standard](https://eips.ethereum.org/EIPS/eip-1822) - Compiiant with [Standard Proxy Storage Slots](https://eips.ethereum.org/EIPS/eip-1967) - Implements delegation of calls to other contracts, with proper forwarding of   return values and bubbling of failures. - It defines a fallback function that delegates all calls to the implementation.\",\"kind\":\"dev\",\"methods\":{\"initializeProxy(address)\":{\"details\":\"Proxy initialization function.      This should only be called once and it is permission-less.\",\"params\":{\"initialAddress\":\"Initial logic contract code address to be used.\"}}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/upgradability/UUPSProxy.sol\":\"UUPSProxy\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":500},\"remappings\":[]},\"sources\":{\"@openzeppelin/contracts/proxy/Proxy.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\npragma solidity ^0.8.0;\\n\\n/**\\n * @dev This abstract contract provides a fallback function that delegates all calls to another contract using the EVM\\n * instruction `delegatecall`. We refer to the second contract as the _implementation_ behind the proxy, and it has to\\n * be specified by overriding the virtual {_implementation} function.\\n *\\n * Additionally, delegation to the implementation can be triggered manually through the {_fallback} function, or to a\\n * different contract through the {_delegate} function.\\n *\\n * The success and return data of the delegated call will be returned back to the caller of the proxy.\\n */\\nabstract contract Proxy {\\n    /**\\n     * @dev Delegates the current call to `implementation`.\\n     *\\n     * This function does not return to its internall call site, it will return directly to the external caller.\\n     */\\n    function _delegate(address implementation) internal virtual {\\n        // solhint-disable-next-line no-inline-assembly\\n        assembly {\\n            // Copy msg.data. We take full control of memory in this inline assembly\\n            // block because it will not return to Solidity code. We overwrite the\\n            // Solidity scratch pad at memory position 0.\\n            calldatacopy(0, 0, calldatasize())\\n\\n            // Call the implementation.\\n            // out and outsize are 0 because we don't know the size yet.\\n            let result := delegatecall(gas(), implementation, 0, calldatasize(), 0, 0)\\n\\n            // Copy the returned data.\\n            returndatacopy(0, 0, returndatasize())\\n\\n            switch result\\n            // delegatecall returns 0 on error.\\n            case 0 { revert(0, returndatasize()) }\\n            default { return(0, returndatasize()) }\\n        }\\n    }\\n\\n    /**\\n     * @dev This is a virtual function that should be overriden so it returns the address to which the fallback function\\n     * and {_fallback} should delegate.\\n     */\\n    function _implementation() internal view virtual returns (address);\\n\\n    /**\\n     * @dev Delegates the current call to the address returned by `_implementation()`.\\n     *\\n     * This function does not return to its internall call site, it will return directly to the external caller.\\n     */\\n    function _fallback() internal virtual {\\n        _beforeFallback();\\n        _delegate(_implementation());\\n    }\\n\\n    /**\\n     * @dev Fallback function that delegates calls to the address returned by `_implementation()`. Will run if no other\\n     * function in the contract matches the call data.\\n     */\\n    fallback () external payable virtual {\\n        _fallback();\\n    }\\n\\n    /**\\n     * @dev Fallback function that delegates calls to the address returned by `_implementation()`. Will run if call data\\n     * is empty.\\n     */\\n    receive () external payable virtual {\\n        _fallback();\\n    }\\n\\n    /**\\n     * @dev Hook that is called before falling back to the implementation. Can happen as part of a manual `_fallback`\\n     * call, or as part of the Solidity `fallback` or `receive` functions.\\n     *\\n     * If overriden should call `super._beforeFallback()`.\\n     */\\n    function _beforeFallback() internal virtual {\\n    }\\n}\\n\",\"keccak256\":\"0xc706395df88dc1d459f21e51c57ab8820af80d1e8c3c14933a651794d78a429f\",\"license\":\"MIT\"},\"contracts/upgradability/UUPSProxy.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity 0.8.1;\\n\\nimport {UUPSUtils} from \\\"./UUPSUtils.sol\\\";\\nimport {Proxy} from \\\"@openzeppelin/contracts/proxy/Proxy.sol\\\";\\n\\n/**\\n * @dev UUPS (Universal Upgradeable Proxy Standard) Proxy\\n *\\n * NOTE:\\n * - Compliant with [Universal Upgradeable Proxy Standard](https://eips.ethereum.org/EIPS/eip-1822)\\n * - Compiiant with [Standard Proxy Storage Slots](https://eips.ethereum.org/EIPS/eip-1967)\\n * - Implements delegation of calls to other contracts, with proper forwarding of\\n *   return values and bubbling of failures.\\n * - It defines a fallback function that delegates all calls to the implementation.\\n */\\ncontract UUPSProxy is Proxy {\\n    /**\\n     * @dev Proxy initialization function.\\n     *      This should only be called once and it is permission-less.\\n     * @param initialAddress Initial logic contract code address to be used.\\n     */\\n    function initializeProxy(address initialAddress) external {\\n        require(initialAddress != address(0), \\\"UUPSProxy: zero address\\\");\\n        require(UUPSUtils.implementation() == address(0), \\\"UUPSProxy: already initialized\\\");\\n        UUPSUtils.setImplementation(initialAddress);\\n    }\\n\\n    /// @dev Proxy._implementation implementation\\n    function _implementation() internal view virtual override returns (address) {\\n        return UUPSUtils.implementation();\\n    }\\n}\\n\",\"keccak256\":\"0xb942e57c80fec51fb59caee747967c7ee15137f19187bf73475f1439327c84c2\",\"license\":\"MIT\"},\"contracts/upgradability/UUPSUtils.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity 0.8.1;\\n\\n/**\\n * @title UUPS (Universal Upgradeable Proxy Standard) Shared Library\\n */\\nlibrary UUPSUtils {\\n    /**\\n     * @dev Implementation slot constant.\\n     * Using https://eips.ethereum.org/EIPS/eip-1967 standard\\n     * Storage slot 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc\\n     * (obtained as bytes32(uint256(keccak256('eip1967.proxy.implementation')) - 1)).\\n     */\\n    bytes32 internal constant _IMPLEMENTATION_SLOT =\\n        0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc;\\n\\n    /// @dev Get implementation address.\\n    function implementation() internal view returns (address impl) {\\n        assembly {\\n            // solium-disable-line\\n            impl := sload(_IMPLEMENTATION_SLOT)\\n        }\\n    }\\n\\n    /// @dev Set new implementation address.\\n    function setImplementation(address codeAddress) internal {\\n        assembly {\\n            // solium-disable-line\\n            sstore(_IMPLEMENTATION_SLOT, codeAddress)\\n        }\\n    }\\n}\\n\",\"keccak256\":\"0x125441f574989269c1e471e61085d33d064903e006f8b29e81eba2b79e2be1da\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b5061022c806100206000396000f3fe6080604052600436106100225760003560e01c80634a0687ef1461003957610031565b366100315761002f610059565b005b61002f610059565b34801561004557600080fd5b5061002f61005436600461015a565b610073565b610061610071565b61007161006c6100de565b6100ed565b565b6001600160a01b0381166100a25760405162461bcd60e51b8152600401610099906101bf565b60405180910390fd5b60006100ac610111565b6001600160a01b0316146100d25760405162461bcd60e51b815260040161009990610188565b6100db81610136565b50565b60006100e8610111565b905090565b3660008037600080366000845af43d6000803e80801561010c573d6000f35b3d6000fd5b7f360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc5490565b7f360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc55565b60006020828403121561016b578081fd5b81356001600160a01b0381168114610181578182fd5b9392505050565b6020808252601e908201527f5555505350726f78793a20616c726561647920696e697469616c697a65640000604082015260600190565b60208082526017908201527f5555505350726f78793a207a65726f206164647265737300000000000000000060408201526060019056fea2646970667358221220aa71d99a9432d5a0d3901c5894a84a38e1098061c2c4880e3077ef5d2abffc2864736f6c63430008010033",
+  "deployedBytecode": "0x6080604052600436106100225760003560e01c80634a0687ef1461003957610031565b366100315761002f610059565b005b61002f610059565b34801561004557600080fd5b5061002f61005436600461015a565b610073565b610061610071565b61007161006c6100de565b6100ed565b565b6001600160a01b0381166100a25760405162461bcd60e51b8152600401610099906101bf565b60405180910390fd5b60006100ac610111565b6001600160a01b0316146100d25760405162461bcd60e51b815260040161009990610188565b6100db81610136565b50565b60006100e8610111565b905090565b3660008037600080366000845af43d6000803e80801561010c573d6000f35b3d6000fd5b7f360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc5490565b7f360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc55565b60006020828403121561016b578081fd5b81356001600160a01b0381168114610181578182fd5b9392505050565b6020808252601e908201527f5555505350726f78793a20616c726561647920696e697469616c697a65640000604082015260600190565b60208082526017908201527f5555505350726f78793a207a65726f206164647265737300000000000000000060408201526060019056fea2646970667358221220aa71d99a9432d5a0d3901c5894a84a38e1098061c2c4880e3077ef5d2abffc2864736f6c63430008010033",
+  "devdoc": {
+    "details": "UUPS (Universal Upgradeable Proxy Standard) Proxy NOTE: - Compliant with [Universal Upgradeable Proxy Standard](https://eips.ethereum.org/EIPS/eip-1822) - Compiiant with [Standard Proxy Storage Slots](https://eips.ethereum.org/EIPS/eip-1967) - Implements delegation of calls to other contracts, with proper forwarding of   return values and bubbling of failures. - It defines a fallback function that delegates all calls to the implementation.",
+    "kind": "dev",
+    "methods": {
+      "initializeProxy(address)": {
+        "details": "Proxy initialization function.      This should only be called once and it is permission-less.",
+        "params": {
+          "initialAddress": "Initial logic contract code address to be used."
+        }
+      }
+    },
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [],
+    "types": null
+  }
+}

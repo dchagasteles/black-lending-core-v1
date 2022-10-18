@@ -1,11 +1,17 @@
 {
-  "compilerOptions": {
-    "target": "es2018",
-    "module": "commonjs",
-    "strict": true,
-    "esModuleInterop": true,
-    "outDir": "dist"
-  },
-  "include": ["./scripts", "./test", "./deploy", "./hardhat.config.ts"],
-  "files": ["./hardhat.config.ts"]
+    "compilerOptions": {
+      "target": "es2018",
+      "module": "commonjs",
+      "strict": true,
+      "esModuleInterop": true,
+      "outDir": "dist"
+    },
+    "include": ["./**/*"],
+    "files": [
+      "./hardhat.config.ts"
+      // "node_modules/@nomiclabs/buidler-ethers/src/type-extensions.d.ts",
+      // "node_modules/buidler-typechain/src/type-extensions.d.ts",
+      // "node_modules/@nomiclabs/buidler-waffle/src/type-extensions.d.ts",
+      // "node_modules/@nomiclabs/buidler-etherscan/src/type-extensions.d.ts"
+    ]
 }
