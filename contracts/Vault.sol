@@ -10,7 +10,7 @@ import "./VaultBase.sol";
 ////////////////////////////////////////////////////////////////////////////////////////////
 ///
 /// @title Vault
-/// @author @conlot-crypto
+/// @author @conlotor
 /// @notice Vault contract stores assets deposited into the Lending pairs.
 /// It enables deposit, withdrawal, flashloans and transfer of tokens.
 /// It represents the deposited token amount in form of shares

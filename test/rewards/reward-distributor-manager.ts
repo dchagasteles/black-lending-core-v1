@@ -1,6 +1,12 @@
-import { ethers } from "hardhat";
-import { expect } from "chai";
-import { runTestSuite, TestVars } from "../lib";
+import { ethers, waffle } from "hardhat";
+import { BigNumber, Signer } from "ethers";
+import { expect, assert } from "chai";
+import {
+  runTestSuite,
+  setupAndInitLendingPair,
+  TestVars,
+  defaultLendingPairInitVars,
+} from "../lib";
 import { deployMockDistributorManager, deployUUPSProxy } from "../../helpers/contracts";
 import { ContractId } from "../../helpers/types";
 
@@ -140,7 +146,7 @@ runTestSuite("RewardDistributorManager", (vars: TestVars) => {
     } = vars;
 
     const uups = await deployUUPSProxy();
-    await uups.initializeProxy(RewardDistributorManager.address);
+    uups.initializeProxy(RewardDistributorManager.address);
 
     const manager = await ethers.getContractAt(ContractId.RewardDistributorManager, uups.address);
 

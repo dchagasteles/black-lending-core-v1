@@ -1,6 +1,6 @@
-import { ethers } from "hardhat";
-import { BigNumber, Event } from "ethers";
-import { expect } from "chai";
+import { ethers, waffle } from "hardhat";
+import { BigNumber, Event, Signer } from "ethers";
+import { expect, assert } from "chai";
 import { runTestSuite, TestVars } from "./lib";
 
 const irParams = {
@@ -236,7 +236,7 @@ runTestSuite("LendingPairFactory", (vars: TestVars) => {
       Vault,
       CollateralAsset,
       BorrowAsset,
-      accounts: [admin, user],
+      accounts: [admin],
     } = vars;
 
     const modelTx = await (
@@ -248,19 +248,28 @@ runTestSuite("LendingPairFactory", (vars: TestVars) => {
     const collateralFactor = BigNumber.from(15).mul(BigNumber.from(10).pow(17));
 
     await expect(
+      LendingPairFactory.createLendingPairWithProxy(
+        "demo",
+        "dst",
+        admin.address,
+        CollateralAsset.address,
+        {
+          borrowAsset: BorrowAsset.address,
+          initialExchangeRateMantissa: "1000000000000000000",
+          reserveFactorMantissa: "500000000000000000",
+          collateralFactor,
+          liquidationFee,
+          interestRateModel: modelEv!.args!.ir,
+        }
+      )
+    ).to.revertedWith("ONLY_OWNER");
+
+    await expect(
       LendingPairFactory.connect(vars.blackSmithTeam.signer).createLendingPairWithProxy(
-        {
-          name: "demo",
-          symbol: "dst",
-          asset: BorrowAsset.address,
-          collateralAsset: CollateralAsset.address,
-          guardian: admin.address,
-        },
-        {
-          depositCollateralLimit: 0,
-          depositBorrowLimit: 0,
-          totalPairDebtLimit: 0,
-        },
+        "demo",
+        "dst",
+        admin.address,
+        CollateralAsset.address,
         {
           borrowAsset: BorrowAsset.address,
           initialExchangeRateMantissa: "1000000000000000000",
@@ -280,7 +289,7 @@ runTestSuite("LendingPairFactory", (vars: TestVars) => {
     await expect(await lendingPair.name()).eq("demo");
     await expect(await lendingPair.symbol()).eq("dst");
     await expect(await lendingPair.interestRate()).eq(modelEv!.args!.ir);
-    await expect(await lendingPair.guardian()).eq(admin.address);
+    await expect(await lendingPair.pauseGuardian()).eq(admin.address);
     await expect(await lendingPair.collateralAsset()).eq(CollateralAsset.address);
     await expect(await lendingPair.asset()).eq(BorrowAsset.address);
     await expect(await lendingPair.vault()).eq(Vault.address);

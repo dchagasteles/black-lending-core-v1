@@ -107,18 +107,6 @@ const _abi = [
         name: "amount",
         type: "uint256",
       },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "shareAmount",
-        type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "amountOfWrappedMinted",
-        type: "uint256",
-      },
     ],
     name: "Deposit",
     type: "event",
@@ -184,7 +172,7 @@ const _abi = [
       {
         indexed: false,
         internalType: "address",
-        name: "guardian",
+        name: "pauseGuardian",
         type: "address",
       },
     ],
@@ -375,37 +363,6 @@ const _abi = [
       },
     ],
     name: "ReserveWithdraw",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "depositCollateralLimit",
-        type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "depositBorrowLimit",
-        type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "totalPairDebtLimit",
-        type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "blockNumber",
-        type: "uint256",
-      },
-    ],
-    name: "UpdateRiskConfiguration",
     type: "event",
   },
   {
@@ -613,36 +570,24 @@ const _abi = [
   {
     inputs: [
       {
-        components: [
-          {
-            internalType: "string",
-            name: "name",
-            type: "string",
-          },
-          {
-            internalType: "string",
-            name: "symbol",
-            type: "string",
-          },
-          {
-            internalType: "contract IERC20",
-            name: "asset",
-            type: "address",
-          },
-          {
-            internalType: "contract IERC20",
-            name: "collateralAsset",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "guardian",
-            type: "address",
-          },
-        ],
-        internalType: "struct DataTypes.LendingPairVars",
-        name: "pariVars",
-        type: "tuple",
+        internalType: "string",
+        name: "_name",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "_symbol",
+        type: "string",
+      },
+      {
+        internalType: "contract IERC20",
+        name: "_asset",
+        type: "address",
+      },
+      {
+        internalType: "contract IERC20",
+        name: "_collateralAsset",
+        type: "address",
       },
       {
         components: [
@@ -692,26 +637,9 @@ const _abi = [
         type: "address",
       },
       {
-        components: [
-          {
-            internalType: "uint256",
-            name: "depositCollateralLimit",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "depositBorrowLimit",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "totalPairDebtLimit",
-            type: "uint256",
-          },
-        ],
-        internalType: "struct DataTypes.RiskConfiguration",
-        name: "_riskConfig",
-        type: "tuple",
+        internalType: "address",
+        name: "_pauseGuardian",
+        type: "address",
       },
     ],
     name: "initialize",

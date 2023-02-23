@@ -17,7 +17,7 @@ import "./token/IERC20Details.sol";
 ////////////////////////////////////////////////////////////////////////////////////////////
 ///
 /// @title LendingPair
-/// @author @conlot-crypto
+/// @author @conlotor
 /// @notice
 ///
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -26,10 +26,10 @@ contract LendingPair is IBSLendingPair, Exponential, Initializable {
     using SafeERC20 for IERC20;
     using DataTypes for DataTypes.BorrowAssetConfig;
 
-    enum Actions {Deposit, Borrow}
-
-    /// @dev risk configuration for limit of deposit & debt
-    DataTypes.RiskConfiguration public riskConfig;
+    enum Actions {
+        Deposit,
+        Borrow
+    }
 
     /// @dev lending pair name
     string public name;
@@ -58,6 +58,14 @@ contract LendingPair is IBSLendingPair, Exponential, Initializable {
     /// @notice The address to withdraw fees to
     address public immutable feeWithdrawalAddr;
 
+    /// @notice The address of Locker contract
+    address public locker;
+
+    /// @dev debt token delegate borrow message digest
+    bytes32 internal constant _CROSS_BORROW_SIGNATURE_TYPE_HASH =
+        keccak256(
+            "CrossBorrow(uint256 _amountToBorrow,uint8 _chainId,uint256 _amountCollateral,string name)"
+        );
     /// @dev borrow asset underlying decimal
     uint8 private _borrowAssetUnderlyingDecimal;
 
@@ -89,7 +97,7 @@ contract LendingPair is IBSLendingPair, Exponential, Initializable {
     uint256 private constant PRECISION = 1e18;
 
     /// @notice the address that can pause borrow & deposits of assets
-    address public guardian;
+    address public pauseGuardian;
 
     /// @notice The pair borrow asset
     IERC20 public override asset;
@@ -117,8 +125,8 @@ contract LendingPair is IBSLendingPair, Exponential, Initializable {
         _;
     }
 
-    modifier onlyGuardian() {
-        require(msg.sender == guardian, "O_G");
+    modifier onlyPauseGuardian() {
+        require(msg.sender == pauseGuardian, "O_G");
         _;
     }
 
@@ -126,7 +134,8 @@ contract LendingPair is IBSLendingPair, Exponential, Initializable {
         IBSVault _vault,
         IPriceOracleAggregator _oracle,
         address _feeWithdrawalAddr,
-        uint256 _procotolLiquidationFeeShare
+        uint256 _procotolLiquidationFeeShare,
+        address _locker
     ) {
         // invalid vault or oracle
         require(address(_vault) != address(0), "IV0");
@@ -134,31 +143,37 @@ contract LendingPair is IBSLendingPair, Exponential, Initializable {
         require(address(_oracle) != address(0), "IV0");
         // invalid fee withdrawal addr
         require(_feeWithdrawalAddr != address(0), "IVWA");
+        // invalid locker addr
+        require(_locker != address(0), "IVLK");
 
         vault = _vault;
         oracle = _oracle;
         feeWithdrawalAddr = _feeWithdrawalAddr;
         protocolLiquidationFeeShare = _procotolLiquidationFeeShare;
+        locker = _locker;
     }
 
     /// @notice Initialize function
-    /// @param pairVars lendingPair vars including name, symbol, asset, collateralAsset, guardian
+    /// @param _name for lending pair
+    /// @param _symbol for lending pair
+    /// @param _asset borrow asset
+    /// @param _collateralAsset pair collateral
     /// @param _wrappedCollateralAsset wrapped token minted when depositing collateral asset
+    /// @param _pauseGuardian pause guardian address
     function initialize(
-        DataTypes.LendingPairVars memory pairVars,
+        string memory _name,
+        string memory _symbol,
+        IERC20 _asset,
+        IERC20 _collateralAsset,
         DataTypes.BorrowAssetConfig calldata borrowConfig,
         IBSWrapperToken _wrappedCollateralAsset,
         IInterestRateModel _interestRate,
-        DataTypes.RiskConfiguration memory _riskConfig
+        address _pauseGuardian
     ) external override initializer {
         // invalid asset or collateral asset
-        require(
-            address(pairVars.asset) != address(0) &&
-                address(pairVars.collateralAsset) != address(0),
-            "IAC"
-        );
+        require(address(_asset) != address(0) && address(_collateralAsset) != address(0), "IAC");
         // invalid pause guardian
-        require(pairVars.guardian != address(0), "IVP");
+        require(_pauseGuardian != address(0), "IVP");
         // validate wrapped collateral asset owner
         require(_wrappedCollateralAsset.owner() == address(this), "IVWC");
         // interest rate model
@@ -168,13 +183,11 @@ contract LendingPair is IBSLendingPair, Exponential, Initializable {
         // validate borrow config
         borrowConfig.validBorrowAssetConfig(address(this));
 
-        riskConfig = _riskConfig;
-
-        name = pairVars.name;
-        symbol = pairVars.symbol;
-        guardian = pairVars.guardian;
-        asset = pairVars.asset;
-        collateralAsset = pairVars.collateralAsset;
+        name = _name;
+        symbol = _symbol;
+        pauseGuardian = _pauseGuardian;
+        asset = _asset;
+        collateralAsset = _collateralAsset;
         interestRate = _interestRate;
         borrowIndex = mantissaOne;
 
@@ -190,71 +203,19 @@ contract LendingPair is IBSLendingPair, Exponential, Initializable {
         _borrowAssetUnderlyingDecimal = IERC20Details(address(asset)).decimals();
         _collateralAssetUnderlyingDecimal = IERC20Details(address(collateralAsset)).decimals();
 
-        emit Initialized(address(this), address(asset), address(collateralAsset), guardian);
-    }
-
-    /// @dev update risk configuration
-    function updateRiskConfig(DataTypes.RiskConfiguration memory newConfig) external onlyGuardian {
-        // check if new depositCollateralLimit is valid
-        require(
-            riskConfig.depositCollateralLimit != newConfig.depositCollateralLimit &&
-                _currentTotal(1) <= newConfig.depositCollateralLimit,
-            "Invalid collaterLimit"
-        );
-
-        // check if new depositBorrowLimit is valid
-        require(
-            riskConfig.depositBorrowLimit != newConfig.depositBorrowLimit &&
-                _currentTotal(2) <= newConfig.depositBorrowLimit,
-            "Invalid borrowLimit"
-        );
-
-        // check if new collateralDepositLimit is valid
-        require(
-            riskConfig.totalPairDebtLimit != newConfig.totalPairDebtLimit &&
-                _currentTotal(3) <= newConfig.totalPairDebtLimit,
-            "Invalid collaterLimit"
-        );
-
-        riskConfig = newConfig;
-
-        emit UpdateRiskConfiguration(
-            riskConfig.depositCollateralLimit,
-            riskConfig.depositBorrowLimit,
-            riskConfig.totalPairDebtLimit,
-            block.number
-        );
+        emit Initialized(address(this), address(_asset), address(_collateralAsset), _pauseGuardian);
     }
 
     /// @dev pause actions in the lending pair
-    function pause(Actions action) external onlyGuardian {
+    function pause(Actions action) external onlyPauseGuardian {
         pauseStatus[action] = true;
         emit ActionPaused(uint8(action), block.timestamp);
     }
 
     /// @dev unpause actions in lending pair
-    function unpause(Actions action) external onlyGuardian {
+    function unpause(Actions action) external onlyPauseGuardian {
         pauseStatus[action] = false;
         emit ActionUnPaused(uint8(action), block.timestamp);
-    }
-
-    /// @dev provide current total depositCollateral, depositBorrow, borrow amount
-    /// @param requestType 0: depositCollateral, 1: depositBorrow, 2: borrow
-    function _currentTotal(uint256 requestType) internal returns (uint256 total) {
-        if (requestType == 1) {
-            if (wrappedCollateralAsset.totalSupply() == 0) {
-                total = 0;
-            } else {
-                total = vault.toUnderlying(collateralAsset, wrappedCollateralAsset.totalSupply());
-            }
-        } else if (requestType == 2) {
-            total = mulScalarTruncate(
-                Exp({mantissa: exchangeRateCurrent()}),
-                wrapperBorrowedAsset.totalSupply()
-            );
-        } else if (requestType == 3) {
-            total = debtToken.totalSupply();
-        }
     }
 
     /// @notice depositCollateral allows a user to deposit underlying collateral from vault
@@ -265,19 +226,9 @@ contract LendingPair is IBSLendingPair, Exponential, Initializable {
         override
         whenNotPaused(Actions.Deposit)
     {
-        require(_tokenRecipient != address(0), "IDB");
-
-        if (riskConfig.depositCollateralLimit > 0) {
-            require(
-                _currentTotal(1) + _amount <= riskConfig.depositCollateralLimit,
-                "Exceeds Deposit Collateral Limit"
-            );
-        }
-
         uint256 vaultShareAmount = vault.toShare(collateralAsset, _amount, false);
 
         vault.transfer(collateralAsset, msg.sender, address(this), vaultShareAmount);
-
         // mint receipient vault share amount
         wrappedCollateralAsset.mint(_tokenRecipient, vaultShareAmount);
 
@@ -286,8 +237,6 @@ contract LendingPair is IBSLendingPair, Exponential, Initializable {
             address(collateralAsset),
             _tokenRecipient,
             msg.sender,
-            _amount,
-            vaultShareAmount,
             vaultShareAmount
         );
     }
@@ -302,19 +251,10 @@ contract LendingPair is IBSLendingPair, Exponential, Initializable {
         whenNotPaused(Actions.Deposit)
     {
         require(_tokenRecipient != address(0), "IDB");
-
-        if (riskConfig.depositBorrowLimit > 0) {
-            require(
-                _currentTotal(2) + _amount <= riskConfig.depositBorrowLimit,
-                "Exceeds Deposit Borrow Limit"
-            );
-        }
-
         uint256 vaultShareAmount = vault.toShare(asset, _amount, false);
 
         // retrieve exchange rate
         uint256 exchangeRateMantissa = exchangeRateCurrent();
-
         // We get the current exchange rate and calculate the number of wrapper token to be minted:
         // mintTokens = _amount / exchangeRate
         uint256 mintTokens = divScalarByExpTruncate(_amount, Exp({mantissa: exchangeRateMantissa}));
@@ -325,15 +265,92 @@ contract LendingPair is IBSLendingPair, Exponential, Initializable {
         // mint appropriate wrapped tokens
         wrapperBorrowedAsset.mint(_tokenRecipient, mintTokens);
 
-        emit Deposit(
-            address(this),
-            address(asset),
-            _tokenRecipient,
-            msg.sender,
-            _amount,
-            vaultShareAmount,
-            mintTokens
+        emit Deposit(address(this), address(asset), _tokenRecipient, msg.sender, vaultShareAmount);
+    }
+
+    function cross_borrowWithSignedMessage(
+        uint256 _amountToBorrow,
+        uint8 _chainId,
+        uint256 _amountCollateral,
+        address _debtOwner,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) public whenNotPaused(Actions.Borrow) {
+        require(_debtOwner != address(0), "INV_DEBT_OWNER");
+
+        bytes32 digest = keccak256(
+            abi.encodePacked(
+                "\x19\x01",
+                _domainSeparatorV4(),
+                keccak256(
+                    abi.encode(
+                        _CROSS_BORROW_SIGNATURE_TYPE_HASH,
+                        keccak256(
+                            "You are cross-borrowing, read more here: https://warp.finance/cross-borrowing"
+                        ),
+                        _amountToBorrow,
+                        _chainId,
+                        _amountCollateral,
+                        name
+                    )
+                )
+            )
         );
+
+        address recoveredAddress = ecrecover(digest, v, r, s);
+        require(recoveredAddress == _debtOwner, "INVALID_SIGNATURE");
+
+        // save on sload
+        uint8 __borrowAssetUnderlyingDecimal = _borrowAssetUnderlyingDecimal;
+        IERC20 __asset = asset;
+
+        uint256 borrowedTotalWithInterest = borrowBalanceCurrent(_debtOwner);
+        uint256 currentBorrowAssetPrice = oracle.getPriceInUSD(__asset);
+        uint256 borrowedTotalInUSDNormalized = normalize(
+            borrowedTotalWithInterest,
+            __borrowAssetUnderlyingDecimal
+        ) * currentBorrowAssetPrice;
+        uint256 borrowLimitInUSDNormalized = normalize(
+            getBorrowLimit(_debtOwner),
+            _collateralAssetUnderlyingDecimal
+        ) * getPriceOfCollateral();
+        uint256 borrowAmountAllowedInUSDNormalized = borrowLimitInUSDNormalized -
+            borrowedTotalInUSDNormalized;
+        // borrow amount in usd normalized
+        uint256 borrowAmountInUSDNormalized = normalize(
+            _amountToBorrow,
+            __borrowAssetUnderlyingDecimal
+        ) * currentBorrowAssetPrice;
+        // require the amount being borrowed is less than
+        // or equal to the amount they are aloud to borrow
+        require(
+            borrowAmountAllowedInUSDNormalized >= borrowAmountInUSDNormalized,
+            "BORROWING_MORE_THAN_ALLOWED"
+        );
+
+        uint256 amountCollateral;
+
+        uint256 maxCollateral = getMaxWithdrawAllowed(msg.sender);
+
+        if (_amountCollateral == 0) {
+            amountCollateral = maxCollateral;
+        } else {
+            amountCollateral = _amountCollateral;
+        }
+
+        // require the availible value of the collateral locked in this contract the user has
+        // is greater than or equal to the amount being withdrawn
+        require(maxAmount >= amountCollateral, "EXCEEDS_ALLOWED");
+        // subtract withdrawn amount from amount stored
+        // reverts if the user doesn't have enough balance
+        wrappedCollateralAsset.burn(msg.sender, amountCollateral);
+
+        // transfer them their token
+        vault.transfer(collateralAsset, address(this), msg.sender, amountCollateral);
+        vault.withdraw(collateralAsset, msg.sender, locker, amountCollateral);
+
+        emit Borrow(msg.sender, _amountToBorrow);
     }
 
     /// @param _amountToBorrow is the amount of the borrow asset tokens the user wants to borrow
@@ -343,13 +360,6 @@ contract LendingPair is IBSLendingPair, Exponential, Initializable {
         public
         whenNotPaused(Actions.Borrow)
     {
-        if (riskConfig.totalPairDebtLimit > 0) {
-            require(
-                _currentTotal(3) + _amountToBorrow <= riskConfig.totalPairDebtLimit,
-                "Exceeds Total Pair Debt Limit"
-            );
-        }
-
         require(_debtOwner != address(0), "INV_DEBT_OWNER");
         // save on sload
         uint8 __borrowAssetUnderlyingDecimal = _borrowAssetUnderlyingDecimal;
@@ -357,17 +367,21 @@ contract LendingPair is IBSLendingPair, Exponential, Initializable {
 
         uint256 borrowedTotalWithInterest = borrowBalanceCurrent(_debtOwner);
         uint256 currentBorrowAssetPrice = oracle.getPriceInUSD(__asset);
-        uint256 borrowedTotalInUSDNormalized =
-            normalize(borrowedTotalWithInterest, __borrowAssetUnderlyingDecimal) *
-                currentBorrowAssetPrice;
-        uint256 borrowLimitInUSDNormalized =
-            normalize(getBorrowLimit(_debtOwner), _collateralAssetUnderlyingDecimal) *
-                getPriceOfCollateral();
-        uint256 borrowAmountAllowedInUSDNormalized =
-            borrowLimitInUSDNormalized - borrowedTotalInUSDNormalized;
+        uint256 borrowedTotalInUSDNormalized = normalize(
+            borrowedTotalWithInterest,
+            __borrowAssetUnderlyingDecimal
+        ) * currentBorrowAssetPrice;
+        uint256 borrowLimitInUSDNormalized = normalize(
+            getBorrowLimit(_debtOwner),
+            _collateralAssetUnderlyingDecimal
+        ) * getPriceOfCollateral();
+        uint256 borrowAmountAllowedInUSDNormalized = borrowLimitInUSDNormalized -
+            borrowedTotalInUSDNormalized;
         // borrow amount in usd normalized
-        uint256 borrowAmountInUSDNormalized =
-            normalize(_amountToBorrow, __borrowAssetUnderlyingDecimal) * currentBorrowAssetPrice;
+        uint256 borrowAmountInUSDNormalized = normalize(
+            _amountToBorrow,
+            __borrowAssetUnderlyingDecimal
+        ) * currentBorrowAssetPrice;
         // require the amount being borrowed is less than
         // or equal to the amount they are aloud to borrow
         require(
@@ -376,12 +390,13 @@ contract LendingPair is IBSLendingPair, Exponential, Initializable {
         );
 
         uint256 amountOfSharesToBorrow = vault.toShare(__asset, _amountToBorrow, false);
-        // mint debt tokens to _debtOwner account
-        debtToken.mint(_debtOwner, msg.sender, _amountToBorrow);
+        // // mint debt tokens to _debtOwner account
+        // debtToken.mint(_debtOwner, msg.sender, _amountToBorrow);
         // set interest index
-        accountInterestIndex[_debtOwner] = borrowIndex;
+        // accountInterestIndex[_debtOwner] = borrowIndex;
         // transfer borrow asset to borrower
         vault.transfer(__asset, address(this), msg.sender, amountOfSharesToBorrow);
+        vault.withdraw(__asset, address(this), msg.sender, amountOfSharesToBorrow);
 
         emit Borrow(msg.sender, _amountToBorrow);
     }
@@ -521,20 +536,26 @@ contract LendingPair is IBSLendingPair, Exponential, Initializable {
                 int256 amount = abi.decode(data[i], (int256));
                 withdrawCollateral(select(amount, value));
             } else if (action == VAULT_DEPOSIT) {
-                (address token, address to, int256 amount) =
-                    abi.decode(data[i], (address, address, int256));
+                (address token, address to, int256 amount) = abi.decode(
+                    data[i],
+                    (address, address, int256)
+                );
                 (value, ) = vault.deposit(IERC20(token), msg.sender, to, select(amount, value));
             } else if (action == VAULT_WITHDRAW) {
-                (address token, address to, int256 amount) =
-                    abi.decode(data[i], (address, address, int256));
+                (address token, address to, int256 amount) = abi.decode(
+                    data[i],
+                    (address, address, int256)
+                );
                 value = vault.withdraw(IERC20(token), msg.sender, to, select(amount, value));
             } else if (action == VAULT_TRANSFER) {
-                (address token, address to, int256 amount) =
-                    abi.decode(data[i], (address, address, int256));
+                (address token, address to, int256 amount) = abi.decode(
+                    data[i],
+                    (address, address, int256)
+                );
                 vault.transfer(IERC20(token), msg.sender, to, select(amount, value));
             } else if (action == VAULT_APPROVE_CONTRACT) {
-                (address _user, address _contract, bool status, uint8 v, bytes32 r, bytes32 s) =
-                    abi.decode(data[i], (address, address, bool, uint8, bytes32, bytes32));
+                (address _user, address _contract, bool status, uint8 v, bytes32 r, bytes32 s) = abi
+                    .decode(data[i], (address, address, bool, uint8, bytes32, bytes32));
                 vault.approveContract(_user, _contract, status, v, r, s);
             }
         }
@@ -617,8 +638,11 @@ contract LendingPair is IBSLendingPair, Exponential, Initializable {
         uint256 borrowIndexPrior = borrowIndex;
 
         // calculate the current borrow interest rate
-        uint256 borrowRateMantissa =
-            interestRate.getBorrowRate(cashPrior, borrowsPrior, reservesPrior);
+        uint256 borrowRateMantissa = interestRate.getBorrowRate(
+            cashPrior,
+            borrowsPrior,
+            reservesPrior
+        );
 
         // Calculate the number of blocks elapsed since the last accrual
         uint256 blockDelta = currentBlockNumber - accrualBlockNumberPrior;
@@ -755,31 +779,34 @@ contract LendingPair is IBSLendingPair, Exponential, Initializable {
         // save on sload
         uint8 __collateralAssetUnderlyingDecimal = _collateralAssetUnderlyingDecimal;
 
-        uint256 normalizedBorrowedAmountTotal =
-            normalize(borrowBalanceCurrent(_account), _borrowAssetUnderlyingDecimal);
+        uint256 normalizedBorrowedAmountTotal = normalize(
+            borrowBalanceCurrent(_account),
+            _borrowAssetUnderlyingDecimal
+        );
 
         uint256 currentCollateralValueInUSD = getPriceOfCollateral();
 
-        uint256 borrowedTotalNormalizedAmountInUSD =
-            getPriceOfToken(asset, normalizedBorrowedAmountTotal);
-        uint256 collateralValueNormalizedInUSD =
-            normalize(
-                getTotalAvailableCollateralValue(_account),
-                __collateralAssetUnderlyingDecimal
-            ) * currentCollateralValueInUSD;
-        uint256 requiredCollateralNormalizedInUSD =
-            calcCollateralRequired(borrowedTotalNormalizedAmountInUSD);
+        uint256 borrowedTotalNormalizedAmountInUSD = getPriceOfToken(
+            asset,
+            normalizedBorrowedAmountTotal
+        );
+        uint256 collateralValueNormalizedInUSD = normalize(
+            getTotalAvailableCollateralValue(_account),
+            __collateralAssetUnderlyingDecimal
+        ) * currentCollateralValueInUSD;
+        uint256 requiredCollateralNormalizedInUSD = calcCollateralRequired(
+            borrowedTotalNormalizedAmountInUSD
+        );
 
         if (collateralValueNormalizedInUSD < requiredCollateralNormalizedInUSD) {
             return 0;
         }
 
         // remaining collateral denormalized
-        uint256 leftoverCollateral =
-            denormalize(
-                collateralValueNormalizedInUSD - requiredCollateralNormalizedInUSD,
-                __collateralAssetUnderlyingDecimal
-            );
+        uint256 leftoverCollateral = denormalize(
+            collateralValueNormalizedInUSD - requiredCollateralNormalizedInUSD,
+            __collateralAssetUnderlyingDecimal
+        );
 
         maxWithdrawAllowed = vault.toShare(
             collateralAsset,
@@ -863,19 +890,21 @@ contract LendingPair is IBSLendingPair, Exponential, Initializable {
         uint256 priceOfCollateralInUSD = getPriceOfCollateral();
 
         uint256 borrowedTotalWithInterest = borrowBalanceCurrent(_borrower);
-        uint256 borrowedTotalInUSDNormalized =
-            normalize(borrowedTotalWithInterest, _borrowAssetUnderlyingDecimal) *
-                currentBorrowAssetPriceInUSD;
-        uint256 borrowLimitInUSDNormalized =
-            normalize(getBorrowLimit(_borrower), _collateralAssetUnderlyingDecimal) *
-                priceOfCollateralInUSD;
+        uint256 borrowedTotalInUSDNormalized = normalize(
+            borrowedTotalWithInterest,
+            _borrowAssetUnderlyingDecimal
+        ) * currentBorrowAssetPriceInUSD;
+        uint256 borrowLimitInUSDNormalized = normalize(
+            getBorrowLimit(_borrower),
+            _collateralAssetUnderlyingDecimal
+        ) * priceOfCollateralInUSD;
 
         // check if the borrow is less than the borrowed amount
         if (borrowLimitInUSDNormalized <= borrowedTotalInUSDNormalized) {
             // liquidation fee
             uint256 totalLiquidationFee = calculateLiquidationFee(borrowedTotalWithInterest);
-            uint256 protocolFeeShareValue =
-                (totalLiquidationFee * protocolLiquidationFeeShare) / PRECISION;
+            uint256 protocolFeeShareValue = (totalLiquidationFee * protocolLiquidationFeeShare) /
+                PRECISION;
 
             _repayLiquidatingLoan(
                 _borrower,
@@ -890,15 +919,18 @@ contract LendingPair is IBSLendingPair, Exponential, Initializable {
             totalReserves = totalReserves + protocolFeeShareValue;
 
             // convert borrowedTotal to usd
-            uint256 borrowedTotalInUSD =
-                currentBorrowAssetPriceInUSD * (borrowedTotalWithInterest + totalLiquidationFee);
+            uint256 borrowedTotalInUSD = currentBorrowAssetPriceInUSD *
+                (borrowedTotalWithInterest + totalLiquidationFee);
 
             // @TODO ceil!?
-            uint256 amountOfCollateralToLiquidate =
-                (borrowedTotalInUSD * _collateralAssetUnderlyingDecimal) /
-                    (priceOfCollateralInUSD * _borrowAssetUnderlyingDecimal);
-            uint256 amountOfCollateralToLiquidateInVaultShares =
-                vault.toShare(collateralAsset, amountOfCollateralToLiquidate, true);
+            uint256 amountOfCollateralToLiquidate = (borrowedTotalInUSD *
+                _collateralAssetUnderlyingDecimal) /
+                (priceOfCollateralInUSD * _borrowAssetUnderlyingDecimal);
+            uint256 amountOfCollateralToLiquidateInVaultShares = vault.toShare(
+                collateralAsset,
+                amountOfCollateralToLiquidate,
+                true
+            );
 
             _liquidate(_borrower, msg.sender, amountOfCollateralToLiquidateInVaultShares);
         }

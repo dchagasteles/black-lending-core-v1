@@ -51,25 +51,23 @@ interface LendingPairInterface extends ethers.utils.Interface {
     "getPriceOfToken(address,uint256)": FunctionFragment;
     "getTotalAvailableCollateralValue(address)": FunctionFragment;
     "getTotalAvailableCollateralValueInUSD(address)": FunctionFragment;
-    "guardian()": FunctionFragment;
-    "initialize(tuple,tuple,address,address,tuple)": FunctionFragment;
+    "initialize(string,string,address,address,tuple,address,address,address)": FunctionFragment;
     "interestRate()": FunctionFragment;
     "liquidate(address)": FunctionFragment;
     "liquidationFee()": FunctionFragment;
     "name()": FunctionFragment;
     "oracle()": FunctionFragment;
     "pause(uint8)": FunctionFragment;
+    "pauseGuardian()": FunctionFragment;
     "pauseStatus(uint8)": FunctionFragment;
     "protocolLiquidationFeeShare()": FunctionFragment;
     "redeem(address,uint256)": FunctionFragment;
     "repay(uint256,address)": FunctionFragment;
-    "riskConfig()": FunctionFragment;
     "supplyRatePerBlock()": FunctionFragment;
     "symbol()": FunctionFragment;
     "totalBorrows()": FunctionFragment;
     "totalReserves()": FunctionFragment;
     "unpause(uint8)": FunctionFragment;
-    "updateRiskConfig(tuple)": FunctionFragment;
     "vault()": FunctionFragment;
     "warp(uint8[],bytes[])": FunctionFragment;
     "withdrawCollateral(uint256)": FunctionFragment;
@@ -189,17 +187,13 @@ interface LendingPairInterface extends ethers.utils.Interface {
     functionFragment: "getTotalAvailableCollateralValueInUSD",
     values: [string]
   ): string;
-  encodeFunctionData(functionFragment: "guardian", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "initialize",
     values: [
-      {
-        name: string;
-        symbol: string;
-        asset: string;
-        collateralAsset: string;
-        guardian: string;
-      },
+      string,
+      string,
+      string,
+      string,
       {
         initialExchangeRateMantissa: BigNumberish;
         reserveFactorMantissa: BigNumberish;
@@ -210,11 +204,7 @@ interface LendingPairInterface extends ethers.utils.Interface {
       },
       string,
       string,
-      {
-        depositCollateralLimit: BigNumberish;
-        depositBorrowLimit: BigNumberish;
-        totalPairDebtLimit: BigNumberish;
-      }
+      string
     ]
   ): string;
   encodeFunctionData(
@@ -229,6 +219,10 @@ interface LendingPairInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "oracle", values?: undefined): string;
   encodeFunctionData(functionFragment: "pause", values: [BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "pauseGuardian",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "pauseStatus",
     values: [BigNumberish]
@@ -246,10 +240,6 @@ interface LendingPairInterface extends ethers.utils.Interface {
     values: [BigNumberish, string]
   ): string;
   encodeFunctionData(
-    functionFragment: "riskConfig",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "supplyRatePerBlock",
     values?: undefined
   ): string;
@@ -265,16 +255,6 @@ interface LendingPairInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "unpause",
     values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "updateRiskConfig",
-    values: [
-      {
-        depositCollateralLimit: BigNumberish;
-        depositBorrowLimit: BigNumberish;
-        totalPairDebtLimit: BigNumberish;
-      }
-    ]
   ): string;
   encodeFunctionData(functionFragment: "vault", values?: undefined): string;
   encodeFunctionData(
@@ -406,7 +386,6 @@ interface LendingPairInterface extends ethers.utils.Interface {
     functionFragment: "getTotalAvailableCollateralValueInUSD",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "guardian", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "interestRate",
@@ -421,6 +400,10 @@ interface LendingPairInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "oracle", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "pause", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "pauseGuardian",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "pauseStatus",
     data: BytesLike
   ): Result;
@@ -430,7 +413,6 @@ interface LendingPairInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "redeem", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "repay", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "riskConfig", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "supplyRatePerBlock",
     data: BytesLike
@@ -445,10 +427,6 @@ interface LendingPairInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "unpause", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "updateRiskConfig",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "vault", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "warp", data: BytesLike): Result;
   decodeFunctionResult(
@@ -472,7 +450,7 @@ interface LendingPairInterface extends ethers.utils.Interface {
     "ActionPaused(uint8,uint256)": EventFragment;
     "ActionUnPaused(uint8,uint256)": EventFragment;
     "Borrow(address,uint256)": EventFragment;
-    "Deposit(address,address,address,address,uint256,uint256,uint256)": EventFragment;
+    "Deposit(address,address,address,address,uint256)": EventFragment;
     "FlashLoan(address,address,address,uint256,uint256)": EventFragment;
     "Initialized(address,address,address,address)": EventFragment;
     "InterestAccrued(address,uint256,uint256,uint256,uint256)": EventFragment;
@@ -481,7 +459,6 @@ interface LendingPairInterface extends ethers.utils.Interface {
     "Redeem(address,address,address,address,uint256,uint256)": EventFragment;
     "Repay(address,address,address,address,uint256)": EventFragment;
     "ReserveWithdraw(address,uint256)": EventFragment;
-    "UpdateRiskConfiguration(uint256,uint256,uint256,uint256)": EventFragment;
     "WithdrawCollateral(address,uint256)": EventFragment;
   };
 
@@ -497,7 +474,6 @@ interface LendingPairInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "Redeem"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Repay"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ReserveWithdraw"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "UpdateRiskConfiguration"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "WithdrawCollateral"): EventFragment;
 }
 
@@ -777,18 +753,11 @@ export class LendingPair extends Contract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    guardian(overrides?: CallOverrides): Promise<[string]>;
-
-    "guardian()"(overrides?: CallOverrides): Promise<[string]>;
-
     initialize(
-      pairVars: {
-        name: string;
-        symbol: string;
-        asset: string;
-        collateralAsset: string;
-        guardian: string;
-      },
+      _name: string,
+      _symbol: string,
+      _asset: string,
+      _collateralAsset: string,
       borrowConfig: {
         initialExchangeRateMantissa: BigNumberish;
         reserveFactorMantissa: BigNumberish;
@@ -799,22 +768,15 @@ export class LendingPair extends Contract {
       },
       _wrappedCollateralAsset: string,
       _interestRate: string,
-      _riskConfig: {
-        depositCollateralLimit: BigNumberish;
-        depositBorrowLimit: BigNumberish;
-        totalPairDebtLimit: BigNumberish;
-      },
+      _pauseGuardian: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    "initialize((string,string,address,address,address),(uint256,uint256,uint256,address,uint256,address),address,address,(uint256,uint256,uint256))"(
-      pairVars: {
-        name: string;
-        symbol: string;
-        asset: string;
-        collateralAsset: string;
-        guardian: string;
-      },
+    "initialize(string,string,address,address,(uint256,uint256,uint256,address,uint256,address),address,address,address)"(
+      _name: string,
+      _symbol: string,
+      _asset: string,
+      _collateralAsset: string,
       borrowConfig: {
         initialExchangeRateMantissa: BigNumberish;
         reserveFactorMantissa: BigNumberish;
@@ -825,11 +787,7 @@ export class LendingPair extends Contract {
       },
       _wrappedCollateralAsset: string,
       _interestRate: string,
-      _riskConfig: {
-        depositCollateralLimit: BigNumberish;
-        depositBorrowLimit: BigNumberish;
-        totalPairDebtLimit: BigNumberish;
-      },
+      _pauseGuardian: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -868,6 +826,10 @@ export class LendingPair extends Contract {
       action: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    pauseGuardian(overrides?: CallOverrides): Promise<[string]>;
+
+    "pauseGuardian()"(overrides?: CallOverrides): Promise<[string]>;
 
     pauseStatus(
       arg0: BigNumberish,
@@ -911,26 +873,6 @@ export class LendingPair extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    riskConfig(
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber, BigNumber] & {
-        depositCollateralLimit: BigNumber;
-        depositBorrowLimit: BigNumber;
-        totalPairDebtLimit: BigNumber;
-      }
-    >;
-
-    "riskConfig()"(
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber, BigNumber] & {
-        depositCollateralLimit: BigNumber;
-        depositBorrowLimit: BigNumber;
-        totalPairDebtLimit: BigNumber;
-      }
-    >;
-
     supplyRatePerBlock(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     "supplyRatePerBlock()"(overrides?: CallOverrides): Promise<[BigNumber]>;
@@ -954,24 +896,6 @@ export class LendingPair extends Contract {
 
     "unpause(uint8)"(
       action: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    updateRiskConfig(
-      newConfig: {
-        depositCollateralLimit: BigNumberish;
-        depositBorrowLimit: BigNumberish;
-        totalPairDebtLimit: BigNumberish;
-      },
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    "updateRiskConfig((uint256,uint256,uint256))"(
-      newConfig: {
-        depositCollateralLimit: BigNumberish;
-        depositBorrowLimit: BigNumberish;
-        totalPairDebtLimit: BigNumberish;
-      },
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -1252,18 +1176,11 @@ export class LendingPair extends Contract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  guardian(overrides?: CallOverrides): Promise<string>;
-
-  "guardian()"(overrides?: CallOverrides): Promise<string>;
-
   initialize(
-    pairVars: {
-      name: string;
-      symbol: string;
-      asset: string;
-      collateralAsset: string;
-      guardian: string;
-    },
+    _name: string,
+    _symbol: string,
+    _asset: string,
+    _collateralAsset: string,
     borrowConfig: {
       initialExchangeRateMantissa: BigNumberish;
       reserveFactorMantissa: BigNumberish;
@@ -1274,22 +1191,15 @@ export class LendingPair extends Contract {
     },
     _wrappedCollateralAsset: string,
     _interestRate: string,
-    _riskConfig: {
-      depositCollateralLimit: BigNumberish;
-      depositBorrowLimit: BigNumberish;
-      totalPairDebtLimit: BigNumberish;
-    },
+    _pauseGuardian: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  "initialize((string,string,address,address,address),(uint256,uint256,uint256,address,uint256,address),address,address,(uint256,uint256,uint256))"(
-    pairVars: {
-      name: string;
-      symbol: string;
-      asset: string;
-      collateralAsset: string;
-      guardian: string;
-    },
+  "initialize(string,string,address,address,(uint256,uint256,uint256,address,uint256,address),address,address,address)"(
+    _name: string,
+    _symbol: string,
+    _asset: string,
+    _collateralAsset: string,
     borrowConfig: {
       initialExchangeRateMantissa: BigNumberish;
       reserveFactorMantissa: BigNumberish;
@@ -1300,11 +1210,7 @@ export class LendingPair extends Contract {
     },
     _wrappedCollateralAsset: string,
     _interestRate: string,
-    _riskConfig: {
-      depositCollateralLimit: BigNumberish;
-      depositBorrowLimit: BigNumberish;
-      totalPairDebtLimit: BigNumberish;
-    },
+    _pauseGuardian: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1344,6 +1250,10 @@ export class LendingPair extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  pauseGuardian(overrides?: CallOverrides): Promise<string>;
+
+  "pauseGuardian()"(overrides?: CallOverrides): Promise<string>;
+
   pauseStatus(arg0: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
 
   "pauseStatus(uint8)"(
@@ -1381,26 +1291,6 @@ export class LendingPair extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  riskConfig(
-    overrides?: CallOverrides
-  ): Promise<
-    [BigNumber, BigNumber, BigNumber] & {
-      depositCollateralLimit: BigNumber;
-      depositBorrowLimit: BigNumber;
-      totalPairDebtLimit: BigNumber;
-    }
-  >;
-
-  "riskConfig()"(
-    overrides?: CallOverrides
-  ): Promise<
-    [BigNumber, BigNumber, BigNumber] & {
-      depositCollateralLimit: BigNumber;
-      depositBorrowLimit: BigNumber;
-      totalPairDebtLimit: BigNumber;
-    }
-  >;
-
   supplyRatePerBlock(overrides?: CallOverrides): Promise<BigNumber>;
 
   "supplyRatePerBlock()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1424,24 +1314,6 @@ export class LendingPair extends Contract {
 
   "unpause(uint8)"(
     action: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  updateRiskConfig(
-    newConfig: {
-      depositCollateralLimit: BigNumberish;
-      depositBorrowLimit: BigNumberish;
-      totalPairDebtLimit: BigNumberish;
-    },
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  "updateRiskConfig((uint256,uint256,uint256))"(
-    newConfig: {
-      depositCollateralLimit: BigNumberish;
-      depositBorrowLimit: BigNumberish;
-      totalPairDebtLimit: BigNumberish;
-    },
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1714,18 +1586,11 @@ export class LendingPair extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    guardian(overrides?: CallOverrides): Promise<string>;
-
-    "guardian()"(overrides?: CallOverrides): Promise<string>;
-
     initialize(
-      pairVars: {
-        name: string;
-        symbol: string;
-        asset: string;
-        collateralAsset: string;
-        guardian: string;
-      },
+      _name: string,
+      _symbol: string,
+      _asset: string,
+      _collateralAsset: string,
       borrowConfig: {
         initialExchangeRateMantissa: BigNumberish;
         reserveFactorMantissa: BigNumberish;
@@ -1736,22 +1601,15 @@ export class LendingPair extends Contract {
       },
       _wrappedCollateralAsset: string,
       _interestRate: string,
-      _riskConfig: {
-        depositCollateralLimit: BigNumberish;
-        depositBorrowLimit: BigNumberish;
-        totalPairDebtLimit: BigNumberish;
-      },
+      _pauseGuardian: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "initialize((string,string,address,address,address),(uint256,uint256,uint256,address,uint256,address),address,address,(uint256,uint256,uint256))"(
-      pairVars: {
-        name: string;
-        symbol: string;
-        asset: string;
-        collateralAsset: string;
-        guardian: string;
-      },
+    "initialize(string,string,address,address,(uint256,uint256,uint256,address,uint256,address),address,address,address)"(
+      _name: string,
+      _symbol: string,
+      _asset: string,
+      _collateralAsset: string,
       borrowConfig: {
         initialExchangeRateMantissa: BigNumberish;
         reserveFactorMantissa: BigNumberish;
@@ -1762,11 +1620,7 @@ export class LendingPair extends Contract {
       },
       _wrappedCollateralAsset: string,
       _interestRate: string,
-      _riskConfig: {
-        depositCollateralLimit: BigNumberish;
-        depositBorrowLimit: BigNumberish;
-        totalPairDebtLimit: BigNumberish;
-      },
+      _pauseGuardian: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1799,6 +1653,10 @@ export class LendingPair extends Contract {
       action: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    pauseGuardian(overrides?: CallOverrides): Promise<string>;
+
+    "pauseGuardian()"(overrides?: CallOverrides): Promise<string>;
 
     pauseStatus(
       arg0: BigNumberish,
@@ -1840,26 +1698,6 @@ export class LendingPair extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    riskConfig(
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber, BigNumber] & {
-        depositCollateralLimit: BigNumber;
-        depositBorrowLimit: BigNumber;
-        totalPairDebtLimit: BigNumber;
-      }
-    >;
-
-    "riskConfig()"(
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber, BigNumber] & {
-        depositCollateralLimit: BigNumber;
-        depositBorrowLimit: BigNumber;
-        totalPairDebtLimit: BigNumber;
-      }
-    >;
-
     supplyRatePerBlock(overrides?: CallOverrides): Promise<BigNumber>;
 
     "supplyRatePerBlock()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1880,24 +1718,6 @@ export class LendingPair extends Contract {
 
     "unpause(uint8)"(
       action: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    updateRiskConfig(
-      newConfig: {
-        depositCollateralLimit: BigNumberish;
-        depositBorrowLimit: BigNumberish;
-        totalPairDebtLimit: BigNumberish;
-      },
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "updateRiskConfig((uint256,uint256,uint256))"(
-      newConfig: {
-        depositCollateralLimit: BigNumberish;
-        depositBorrowLimit: BigNumberish;
-        totalPairDebtLimit: BigNumberish;
-      },
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1976,19 +1796,15 @@ export class LendingPair extends Contract {
       asset: string | null,
       tokenReceipeint: string | null,
       user: null,
-      amount: null,
-      shareAmount: null,
-      amountOfWrappedMinted: null
+      amount: null
     ): TypedEventFilter<
-      [string, string, string, string, BigNumber, BigNumber, BigNumber],
+      [string, string, string, string, BigNumber],
       {
         pair: string;
         asset: string;
         tokenReceipeint: string;
         user: string;
         amount: BigNumber;
-        shareAmount: BigNumber;
-        amountOfWrappedMinted: BigNumber;
       }
     >;
 
@@ -2013,10 +1829,15 @@ export class LendingPair extends Contract {
       pair: string | null,
       asset: string | null,
       collateralAsset: string | null,
-      guardian: null
+      pauseGuardian: null
     ): TypedEventFilter<
       [string, string, string, string],
-      { pair: string; asset: string; collateralAsset: string; guardian: string }
+      {
+        pair: string;
+        asset: string;
+        collateralAsset: string;
+        pauseGuardian: string;
+      }
     >;
 
     InterestAccrued(
@@ -2099,21 +1920,6 @@ export class LendingPair extends Contract {
     ): TypedEventFilter<
       [string, BigNumber],
       { user: string; shares: BigNumber }
-    >;
-
-    UpdateRiskConfiguration(
-      depositCollateralLimit: null,
-      depositBorrowLimit: null,
-      totalPairDebtLimit: null,
-      blockNumber: null
-    ): TypedEventFilter<
-      [BigNumber, BigNumber, BigNumber, BigNumber],
-      {
-        depositCollateralLimit: BigNumber;
-        depositBorrowLimit: BigNumber;
-        totalPairDebtLimit: BigNumber;
-        blockNumber: BigNumber;
-      }
     >;
 
     WithdrawCollateral(
@@ -2358,18 +2164,11 @@ export class LendingPair extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    guardian(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "guardian()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     initialize(
-      pairVars: {
-        name: string;
-        symbol: string;
-        asset: string;
-        collateralAsset: string;
-        guardian: string;
-      },
+      _name: string,
+      _symbol: string,
+      _asset: string,
+      _collateralAsset: string,
       borrowConfig: {
         initialExchangeRateMantissa: BigNumberish;
         reserveFactorMantissa: BigNumberish;
@@ -2380,22 +2179,15 @@ export class LendingPair extends Contract {
       },
       _wrappedCollateralAsset: string,
       _interestRate: string,
-      _riskConfig: {
-        depositCollateralLimit: BigNumberish;
-        depositBorrowLimit: BigNumberish;
-        totalPairDebtLimit: BigNumberish;
-      },
+      _pauseGuardian: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    "initialize((string,string,address,address,address),(uint256,uint256,uint256,address,uint256,address),address,address,(uint256,uint256,uint256))"(
-      pairVars: {
-        name: string;
-        symbol: string;
-        asset: string;
-        collateralAsset: string;
-        guardian: string;
-      },
+    "initialize(string,string,address,address,(uint256,uint256,uint256,address,uint256,address),address,address,address)"(
+      _name: string,
+      _symbol: string,
+      _asset: string,
+      _collateralAsset: string,
       borrowConfig: {
         initialExchangeRateMantissa: BigNumberish;
         reserveFactorMantissa: BigNumberish;
@@ -2406,11 +2198,7 @@ export class LendingPair extends Contract {
       },
       _wrappedCollateralAsset: string,
       _interestRate: string,
-      _riskConfig: {
-        depositCollateralLimit: BigNumberish;
-        depositBorrowLimit: BigNumberish;
-        totalPairDebtLimit: BigNumberish;
-      },
+      _pauseGuardian: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -2449,6 +2237,10 @@ export class LendingPair extends Contract {
       action: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    pauseGuardian(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "pauseGuardian()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     pauseStatus(
       arg0: BigNumberish,
@@ -2490,10 +2282,6 @@ export class LendingPair extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    riskConfig(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "riskConfig()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     supplyRatePerBlock(overrides?: CallOverrides): Promise<BigNumber>;
 
     "supplyRatePerBlock()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -2517,24 +2305,6 @@ export class LendingPair extends Contract {
 
     "unpause(uint8)"(
       action: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    updateRiskConfig(
-      newConfig: {
-        depositCollateralLimit: BigNumberish;
-        depositBorrowLimit: BigNumberish;
-        totalPairDebtLimit: BigNumberish;
-      },
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    "updateRiskConfig((uint256,uint256,uint256))"(
-      newConfig: {
-        depositCollateralLimit: BigNumberish;
-        depositBorrowLimit: BigNumberish;
-        totalPairDebtLimit: BigNumberish;
-      },
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -2836,18 +2606,11 @@ export class LendingPair extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    guardian(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "guardian()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     initialize(
-      pairVars: {
-        name: string;
-        symbol: string;
-        asset: string;
-        collateralAsset: string;
-        guardian: string;
-      },
+      _name: string,
+      _symbol: string,
+      _asset: string,
+      _collateralAsset: string,
       borrowConfig: {
         initialExchangeRateMantissa: BigNumberish;
         reserveFactorMantissa: BigNumberish;
@@ -2858,22 +2621,15 @@ export class LendingPair extends Contract {
       },
       _wrappedCollateralAsset: string,
       _interestRate: string,
-      _riskConfig: {
-        depositCollateralLimit: BigNumberish;
-        depositBorrowLimit: BigNumberish;
-        totalPairDebtLimit: BigNumberish;
-      },
+      _pauseGuardian: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    "initialize((string,string,address,address,address),(uint256,uint256,uint256,address,uint256,address),address,address,(uint256,uint256,uint256))"(
-      pairVars: {
-        name: string;
-        symbol: string;
-        asset: string;
-        collateralAsset: string;
-        guardian: string;
-      },
+    "initialize(string,string,address,address,(uint256,uint256,uint256,address,uint256,address),address,address,address)"(
+      _name: string,
+      _symbol: string,
+      _asset: string,
+      _collateralAsset: string,
       borrowConfig: {
         initialExchangeRateMantissa: BigNumberish;
         reserveFactorMantissa: BigNumberish;
@@ -2884,11 +2640,7 @@ export class LendingPair extends Contract {
       },
       _wrappedCollateralAsset: string,
       _interestRate: string,
-      _riskConfig: {
-        depositCollateralLimit: BigNumberish;
-        depositBorrowLimit: BigNumberish;
-        totalPairDebtLimit: BigNumberish;
-      },
+      _pauseGuardian: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -2929,6 +2681,10 @@ export class LendingPair extends Contract {
       action: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
+
+    pauseGuardian(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "pauseGuardian()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     pauseStatus(
       arg0: BigNumberish,
@@ -2972,10 +2728,6 @@ export class LendingPair extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    riskConfig(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "riskConfig()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     supplyRatePerBlock(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -3003,24 +2755,6 @@ export class LendingPair extends Contract {
 
     "unpause(uint8)"(
       action: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    updateRiskConfig(
-      newConfig: {
-        depositCollateralLimit: BigNumberish;
-        depositBorrowLimit: BigNumberish;
-        totalPairDebtLimit: BigNumberish;
-      },
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    "updateRiskConfig((uint256,uint256,uint256))"(
-      newConfig: {
-        depositCollateralLimit: BigNumberish;
-        depositBorrowLimit: BigNumberish;
-        totalPairDebtLimit: BigNumberish;
-      },
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

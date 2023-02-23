@@ -1,0 +1,18 @@
+node_modules
+
+#Hardhat files
+cache
+artifacts
+.vscode
+docs/Demo.sol
+docs/Demo12.sol
+coverage/
+coverage.json
+
+deployments/localhost
+Flattened.sol
+*solcx-*
+deploy.txt
+exports
+.env
+.DS_Store

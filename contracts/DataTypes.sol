@@ -6,24 +6,10 @@ import "./interfaces/IDebtToken.sol";
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 /// @title DataTypes
-/// @author @conlot-crypto
+/// @author @conlotor
 ////////////////////////////////////////////////////////////////////////////////////////////
 
 library DataTypes {
-    struct LendingPairVars {
-        string name;
-        string symbol;
-        IERC20 asset;
-        IERC20 collateralAsset;
-        address guardian;
-    }
-
-    struct RiskConfiguration {
-        uint256 depositCollateralLimit;
-        uint256 depositBorrowLimit;
-        uint256 totalPairDebtLimit;
-    }
-
     struct BorrowAssetConfig {
         uint256 initialExchangeRateMantissa;
         uint256 reserveFactorMantissa;

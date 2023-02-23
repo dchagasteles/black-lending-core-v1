@@ -1,5 +1,5 @@
 {
-  "name": "blacksmith",
+  "name": "black-lending-core",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -15,20 +15,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/conlotor/warp-blacksmith.git"
+    "url": "git+https://github.com/conlotor/black-lending-core.git"
   },
-  "author": "",
+  "author": "conlotor",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/conlotor/warp-blacksmith/issues"
+    "url": "https://github.com/conlotor/black-lending-core/issues"
   },
-  "homepage": "https://github.com/conlotor/warp-blacksmith#readme",
+  "homepage": "https://github.com/conlotor/black-lending-core#readme",
   "dependencies": {
     "@openzeppelin/contracts": "4.0.0-rc.0",
     "@uniswap/lib": "^4.0.1-alpha",
     "@uniswap/v2-core": "^1.0.1",
     "@uniswap/v2-periphery": "^1.1.0-beta.0",
-    "dotenv": "^16.0.1",
     "ethereumjs-util": "^7.0.10",
     "hardhat": "^2.5.0",
     "hardhat-deploy": "0.9.0",
@@ -56,7 +55,7 @@
     "prettier-plugin-solidity": "^1.0.0-beta.10",
     "solhint-plugin-prettier": "0.0.5",
     "solidity-coverage": "^0.7.16",
-    "ts-node": "^10.6.0",
+    "ts-node": "^9.1.1",
     "typechain": "^4.0.3",
     "typescript": "^4.2.3"
   }

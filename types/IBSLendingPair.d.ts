@@ -32,7 +32,7 @@ interface IBSLendingPairInterface extends ethers.utils.Interface {
     "depositBorrowAsset(address,uint256)": FunctionFragment;
     "depositCollateral(address,uint256)": FunctionFragment;
     "getMaxWithdrawAllowed(address)": FunctionFragment;
-    "initialize(tuple,tuple,address,address,tuple)": FunctionFragment;
+    "initialize(string,string,address,address,tuple,address,address,address)": FunctionFragment;
     "liquidate(address)": FunctionFragment;
     "oracle()": FunctionFragment;
     "redeem(address,uint256)": FunctionFragment;
@@ -83,13 +83,10 @@ interface IBSLendingPairInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "initialize",
     values: [
-      {
-        name: string;
-        symbol: string;
-        asset: string;
-        collateralAsset: string;
-        guardian: string;
-      },
+      string,
+      string,
+      string,
+      string,
       {
         initialExchangeRateMantissa: BigNumberish;
         reserveFactorMantissa: BigNumberish;
@@ -100,11 +97,7 @@ interface IBSLendingPairInterface extends ethers.utils.Interface {
       },
       string,
       string,
-      {
-        depositCollateralLimit: BigNumberish;
-        depositBorrowLimit: BigNumberish;
-        totalPairDebtLimit: BigNumberish;
-      }
+      string
     ]
   ): string;
   encodeFunctionData(functionFragment: "liquidate", values: [string]): string;
@@ -193,7 +186,7 @@ interface IBSLendingPairInterface extends ethers.utils.Interface {
     "ActionPaused(uint8,uint256)": EventFragment;
     "ActionUnPaused(uint8,uint256)": EventFragment;
     "Borrow(address,uint256)": EventFragment;
-    "Deposit(address,address,address,address,uint256,uint256,uint256)": EventFragment;
+    "Deposit(address,address,address,address,uint256)": EventFragment;
     "FlashLoan(address,address,address,uint256,uint256)": EventFragment;
     "Initialized(address,address,address,address)": EventFragment;
     "InterestAccrued(address,uint256,uint256,uint256,uint256)": EventFragment;
@@ -202,7 +195,6 @@ interface IBSLendingPairInterface extends ethers.utils.Interface {
     "Redeem(address,address,address,address,uint256,uint256)": EventFragment;
     "Repay(address,address,address,address,uint256)": EventFragment;
     "ReserveWithdraw(address,uint256)": EventFragment;
-    "UpdateRiskConfiguration(uint256,uint256,uint256,uint256)": EventFragment;
     "WithdrawCollateral(address,uint256)": EventFragment;
   };
 
@@ -218,7 +210,6 @@ interface IBSLendingPairInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "Redeem"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Repay"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ReserveWithdraw"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "UpdateRiskConfiguration"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "WithdrawCollateral"): EventFragment;
 }
 
@@ -357,13 +348,10 @@ export class IBSLendingPair extends Contract {
     ): Promise<ContractTransaction>;
 
     initialize(
-      pariVars: {
-        name: string;
-        symbol: string;
-        asset: string;
-        collateralAsset: string;
-        guardian: string;
-      },
+      _name: string,
+      _symbol: string,
+      _asset: string,
+      _collateralAsset: string,
       borrowConfig: {
         initialExchangeRateMantissa: BigNumberish;
         reserveFactorMantissa: BigNumberish;
@@ -374,22 +362,15 @@ export class IBSLendingPair extends Contract {
       },
       _wrappedCollateralAsset: string,
       _interestRate: string,
-      _riskConfig: {
-        depositCollateralLimit: BigNumberish;
-        depositBorrowLimit: BigNumberish;
-        totalPairDebtLimit: BigNumberish;
-      },
+      _pauseGuardian: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    "initialize((string,string,address,address,address),(uint256,uint256,uint256,address,uint256,address),address,address,(uint256,uint256,uint256))"(
-      pariVars: {
-        name: string;
-        symbol: string;
-        asset: string;
-        collateralAsset: string;
-        guardian: string;
-      },
+    "initialize(string,string,address,address,(uint256,uint256,uint256,address,uint256,address),address,address,address)"(
+      _name: string,
+      _symbol: string,
+      _asset: string,
+      _collateralAsset: string,
       borrowConfig: {
         initialExchangeRateMantissa: BigNumberish;
         reserveFactorMantissa: BigNumberish;
@@ -400,11 +381,7 @@ export class IBSLendingPair extends Contract {
       },
       _wrappedCollateralAsset: string,
       _interestRate: string,
-      _riskConfig: {
-        depositCollateralLimit: BigNumberish;
-        depositBorrowLimit: BigNumberish;
-        totalPairDebtLimit: BigNumberish;
-      },
+      _pauseGuardian: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -548,13 +525,10 @@ export class IBSLendingPair extends Contract {
   ): Promise<ContractTransaction>;
 
   initialize(
-    pariVars: {
-      name: string;
-      symbol: string;
-      asset: string;
-      collateralAsset: string;
-      guardian: string;
-    },
+    _name: string,
+    _symbol: string,
+    _asset: string,
+    _collateralAsset: string,
     borrowConfig: {
       initialExchangeRateMantissa: BigNumberish;
       reserveFactorMantissa: BigNumberish;
@@ -565,22 +539,15 @@ export class IBSLendingPair extends Contract {
     },
     _wrappedCollateralAsset: string,
     _interestRate: string,
-    _riskConfig: {
-      depositCollateralLimit: BigNumberish;
-      depositBorrowLimit: BigNumberish;
-      totalPairDebtLimit: BigNumberish;
-    },
+    _pauseGuardian: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  "initialize((string,string,address,address,address),(uint256,uint256,uint256,address,uint256,address),address,address,(uint256,uint256,uint256))"(
-    pariVars: {
-      name: string;
-      symbol: string;
-      asset: string;
-      collateralAsset: string;
-      guardian: string;
-    },
+  "initialize(string,string,address,address,(uint256,uint256,uint256,address,uint256,address),address,address,address)"(
+    _name: string,
+    _symbol: string,
+    _asset: string,
+    _collateralAsset: string,
     borrowConfig: {
       initialExchangeRateMantissa: BigNumberish;
       reserveFactorMantissa: BigNumberish;
@@ -591,11 +558,7 @@ export class IBSLendingPair extends Contract {
     },
     _wrappedCollateralAsset: string,
     _interestRate: string,
-    _riskConfig: {
-      depositCollateralLimit: BigNumberish;
-      depositBorrowLimit: BigNumberish;
-      totalPairDebtLimit: BigNumberish;
-    },
+    _pauseGuardian: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -739,13 +702,10 @@ export class IBSLendingPair extends Contract {
     ): Promise<BigNumber>;
 
     initialize(
-      pariVars: {
-        name: string;
-        symbol: string;
-        asset: string;
-        collateralAsset: string;
-        guardian: string;
-      },
+      _name: string,
+      _symbol: string,
+      _asset: string,
+      _collateralAsset: string,
       borrowConfig: {
         initialExchangeRateMantissa: BigNumberish;
         reserveFactorMantissa: BigNumberish;
@@ -756,22 +716,15 @@ export class IBSLendingPair extends Contract {
       },
       _wrappedCollateralAsset: string,
       _interestRate: string,
-      _riskConfig: {
-        depositCollateralLimit: BigNumberish;
-        depositBorrowLimit: BigNumberish;
-        totalPairDebtLimit: BigNumberish;
-      },
+      _pauseGuardian: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "initialize((string,string,address,address,address),(uint256,uint256,uint256,address,uint256,address),address,address,(uint256,uint256,uint256))"(
-      pariVars: {
-        name: string;
-        symbol: string;
-        asset: string;
-        collateralAsset: string;
-        guardian: string;
-      },
+    "initialize(string,string,address,address,(uint256,uint256,uint256,address,uint256,address),address,address,address)"(
+      _name: string,
+      _symbol: string,
+      _asset: string,
+      _collateralAsset: string,
       borrowConfig: {
         initialExchangeRateMantissa: BigNumberish;
         reserveFactorMantissa: BigNumberish;
@@ -782,11 +735,7 @@ export class IBSLendingPair extends Contract {
       },
       _wrappedCollateralAsset: string,
       _interestRate: string,
-      _riskConfig: {
-        depositCollateralLimit: BigNumberish;
-        depositBorrowLimit: BigNumberish;
-        totalPairDebtLimit: BigNumberish;
-      },
+      _pauseGuardian: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -866,19 +815,15 @@ export class IBSLendingPair extends Contract {
       asset: string | null,
       tokenReceipeint: string | null,
       user: null,
-      amount: null,
-      shareAmount: null,
-      amountOfWrappedMinted: null
+      amount: null
     ): TypedEventFilter<
-      [string, string, string, string, BigNumber, BigNumber, BigNumber],
+      [string, string, string, string, BigNumber],
       {
         pair: string;
         asset: string;
         tokenReceipeint: string;
         user: string;
         amount: BigNumber;
-        shareAmount: BigNumber;
-        amountOfWrappedMinted: BigNumber;
       }
     >;
 
@@ -903,10 +848,15 @@ export class IBSLendingPair extends Contract {
       pair: string | null,
       asset: string | null,
       collateralAsset: string | null,
-      guardian: null
+      pauseGuardian: null
     ): TypedEventFilter<
       [string, string, string, string],
-      { pair: string; asset: string; collateralAsset: string; guardian: string }
+      {
+        pair: string;
+        asset: string;
+        collateralAsset: string;
+        pauseGuardian: string;
+      }
     >;
 
     InterestAccrued(
@@ -989,21 +939,6 @@ export class IBSLendingPair extends Contract {
     ): TypedEventFilter<
       [string, BigNumber],
       { user: string; shares: BigNumber }
-    >;
-
-    UpdateRiskConfiguration(
-      depositCollateralLimit: null,
-      depositBorrowLimit: null,
-      totalPairDebtLimit: null,
-      blockNumber: null
-    ): TypedEventFilter<
-      [BigNumber, BigNumber, BigNumber, BigNumber],
-      {
-        depositCollateralLimit: BigNumber;
-        depositBorrowLimit: BigNumber;
-        totalPairDebtLimit: BigNumber;
-        blockNumber: BigNumber;
-      }
     >;
 
     WithdrawCollateral(
@@ -1107,13 +1042,10 @@ export class IBSLendingPair extends Contract {
     ): Promise<BigNumber>;
 
     initialize(
-      pariVars: {
-        name: string;
-        symbol: string;
-        asset: string;
-        collateralAsset: string;
-        guardian: string;
-      },
+      _name: string,
+      _symbol: string,
+      _asset: string,
+      _collateralAsset: string,
       borrowConfig: {
         initialExchangeRateMantissa: BigNumberish;
         reserveFactorMantissa: BigNumberish;
@@ -1124,22 +1056,15 @@ export class IBSLendingPair extends Contract {
       },
       _wrappedCollateralAsset: string,
       _interestRate: string,
-      _riskConfig: {
-        depositCollateralLimit: BigNumberish;
-        depositBorrowLimit: BigNumberish;
-        totalPairDebtLimit: BigNumberish;
-      },
+      _pauseGuardian: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    "initialize((string,string,address,address,address),(uint256,uint256,uint256,address,uint256,address),address,address,(uint256,uint256,uint256))"(
-      pariVars: {
-        name: string;
-        symbol: string;
-        asset: string;
-        collateralAsset: string;
-        guardian: string;
-      },
+    "initialize(string,string,address,address,(uint256,uint256,uint256,address,uint256,address),address,address,address)"(
+      _name: string,
+      _symbol: string,
+      _asset: string,
+      _collateralAsset: string,
       borrowConfig: {
         initialExchangeRateMantissa: BigNumberish;
         reserveFactorMantissa: BigNumberish;
@@ -1150,11 +1075,7 @@ export class IBSLendingPair extends Contract {
       },
       _wrappedCollateralAsset: string,
       _interestRate: string,
-      _riskConfig: {
-        depositCollateralLimit: BigNumberish;
-        depositBorrowLimit: BigNumberish;
-        totalPairDebtLimit: BigNumberish;
-      },
+      _pauseGuardian: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1301,13 +1222,10 @@ export class IBSLendingPair extends Contract {
     ): Promise<PopulatedTransaction>;
 
     initialize(
-      pariVars: {
-        name: string;
-        symbol: string;
-        asset: string;
-        collateralAsset: string;
-        guardian: string;
-      },
+      _name: string,
+      _symbol: string,
+      _asset: string,
+      _collateralAsset: string,
       borrowConfig: {
         initialExchangeRateMantissa: BigNumberish;
         reserveFactorMantissa: BigNumberish;
@@ -1318,22 +1236,15 @@ export class IBSLendingPair extends Contract {
       },
       _wrappedCollateralAsset: string,
       _interestRate: string,
-      _riskConfig: {
-        depositCollateralLimit: BigNumberish;
-        depositBorrowLimit: BigNumberish;
-        totalPairDebtLimit: BigNumberish;
-      },
+      _pauseGuardian: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    "initialize((string,string,address,address,address),(uint256,uint256,uint256,address,uint256,address),address,address,(uint256,uint256,uint256))"(
-      pariVars: {
-        name: string;
-        symbol: string;
-        asset: string;
-        collateralAsset: string;
-        guardian: string;
-      },
+    "initialize(string,string,address,address,(uint256,uint256,uint256,address,uint256,address),address,address,address)"(
+      _name: string,
+      _symbol: string,
+      _asset: string,
+      _collateralAsset: string,
       borrowConfig: {
         initialExchangeRateMantissa: BigNumberish;
         reserveFactorMantissa: BigNumberish;
@@ -1344,11 +1255,7 @@ export class IBSLendingPair extends Contract {
       },
       _wrappedCollateralAsset: string,
       _interestRate: string,
-      _riskConfig: {
-        depositCollateralLimit: BigNumberish;
-        depositBorrowLimit: BigNumberish;
-        totalPairDebtLimit: BigNumberish;
-      },
+      _pauseGuardian: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

@@ -26,7 +26,7 @@ interface LendingPairFactoryInterface extends ethers.utils.Interface {
     "borrowAssetWrapperImplementation()": FunctionFragment;
     "collateralWrapperImplementation()": FunctionFragment;
     "createIR(tuple,address)": FunctionFragment;
-    "createLendingPairWithProxy(tuple,tuple,tuple)": FunctionFragment;
+    "createLendingPairWithProxy(string,string,address,address,tuple)": FunctionFragment;
     "debtTokenImplementation()": FunctionFragment;
     "disableIR(address)": FunctionFragment;
     "lendingPairImplementation()": FunctionFragment;
@@ -77,18 +77,10 @@ interface LendingPairFactoryInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "createLendingPairWithProxy",
     values: [
-      {
-        name: string;
-        symbol: string;
-        asset: string;
-        collateralAsset: string;
-        guardian: string;
-      },
-      {
-        depositCollateralLimit: BigNumberish;
-        depositBorrowLimit: BigNumberish;
-        totalPairDebtLimit: BigNumberish;
-      },
+      string,
+      string,
+      string,
+      string,
       {
         borrowAsset: string;
         initialExchangeRateMantissa: BigNumberish;
@@ -330,18 +322,10 @@ export class LendingPairFactory extends Contract {
     ): Promise<ContractTransaction>;
 
     createLendingPairWithProxy(
-      _pairVars: {
-        name: string;
-        symbol: string;
-        asset: string;
-        collateralAsset: string;
-        guardian: string;
-      },
-      _riskConfig: {
-        depositCollateralLimit: BigNumberish;
-        depositBorrowLimit: BigNumberish;
-        totalPairDebtLimit: BigNumberish;
-      },
+      _lendingPairName: string,
+      _lendingPairSymbol: string,
+      _pauseGuardian: string,
+      _collateralAsset: string,
       _borrowVars: {
         borrowAsset: string;
         initialExchangeRateMantissa: BigNumberish;
@@ -353,19 +337,11 @@ export class LendingPairFactory extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    "createLendingPairWithProxy((string,string,address,address,address),(uint256,uint256,uint256),(address,uint256,uint256,uint256,uint256,address))"(
-      _pairVars: {
-        name: string;
-        symbol: string;
-        asset: string;
-        collateralAsset: string;
-        guardian: string;
-      },
-      _riskConfig: {
-        depositCollateralLimit: BigNumberish;
-        depositBorrowLimit: BigNumberish;
-        totalPairDebtLimit: BigNumberish;
-      },
+    "createLendingPairWithProxy(string,string,address,address,(address,uint256,uint256,uint256,uint256,address))"(
+      _lendingPairName: string,
+      _lendingPairSymbol: string,
+      _pauseGuardian: string,
+      _collateralAsset: string,
       _borrowVars: {
         borrowAsset: string;
         initialExchangeRateMantissa: BigNumberish;
@@ -548,18 +524,10 @@ export class LendingPairFactory extends Contract {
   ): Promise<ContractTransaction>;
 
   createLendingPairWithProxy(
-    _pairVars: {
-      name: string;
-      symbol: string;
-      asset: string;
-      collateralAsset: string;
-      guardian: string;
-    },
-    _riskConfig: {
-      depositCollateralLimit: BigNumberish;
-      depositBorrowLimit: BigNumberish;
-      totalPairDebtLimit: BigNumberish;
-    },
+    _lendingPairName: string,
+    _lendingPairSymbol: string,
+    _pauseGuardian: string,
+    _collateralAsset: string,
     _borrowVars: {
       borrowAsset: string;
       initialExchangeRateMantissa: BigNumberish;
@@ -571,19 +539,11 @@ export class LendingPairFactory extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  "createLendingPairWithProxy((string,string,address,address,address),(uint256,uint256,uint256),(address,uint256,uint256,uint256,uint256,address))"(
-    _pairVars: {
-      name: string;
-      symbol: string;
-      asset: string;
-      collateralAsset: string;
-      guardian: string;
-    },
-    _riskConfig: {
-      depositCollateralLimit: BigNumberish;
-      depositBorrowLimit: BigNumberish;
-      totalPairDebtLimit: BigNumberish;
-    },
+  "createLendingPairWithProxy(string,string,address,address,(address,uint256,uint256,uint256,uint256,address))"(
+    _lendingPairName: string,
+    _lendingPairSymbol: string,
+    _pauseGuardian: string,
+    _collateralAsset: string,
     _borrowVars: {
       borrowAsset: string;
       initialExchangeRateMantissa: BigNumberish;
@@ -764,18 +724,10 @@ export class LendingPairFactory extends Contract {
     ): Promise<string>;
 
     createLendingPairWithProxy(
-      _pairVars: {
-        name: string;
-        symbol: string;
-        asset: string;
-        collateralAsset: string;
-        guardian: string;
-      },
-      _riskConfig: {
-        depositCollateralLimit: BigNumberish;
-        depositBorrowLimit: BigNumberish;
-        totalPairDebtLimit: BigNumberish;
-      },
+      _lendingPairName: string,
+      _lendingPairSymbol: string,
+      _pauseGuardian: string,
+      _collateralAsset: string,
       _borrowVars: {
         borrowAsset: string;
         initialExchangeRateMantissa: BigNumberish;
@@ -787,19 +739,11 @@ export class LendingPairFactory extends Contract {
       overrides?: CallOverrides
     ): Promise<string>;
 
-    "createLendingPairWithProxy((string,string,address,address,address),(uint256,uint256,uint256),(address,uint256,uint256,uint256,uint256,address))"(
-      _pairVars: {
-        name: string;
-        symbol: string;
-        asset: string;
-        collateralAsset: string;
-        guardian: string;
-      },
-      _riskConfig: {
-        depositCollateralLimit: BigNumberish;
-        depositBorrowLimit: BigNumberish;
-        totalPairDebtLimit: BigNumberish;
-      },
+    "createLendingPairWithProxy(string,string,address,address,(address,uint256,uint256,uint256,uint256,address))"(
+      _lendingPairName: string,
+      _lendingPairSymbol: string,
+      _pauseGuardian: string,
+      _collateralAsset: string,
       _borrowVars: {
         borrowAsset: string;
         initialExchangeRateMantissa: BigNumberish;
@@ -1016,18 +960,10 @@ export class LendingPairFactory extends Contract {
     ): Promise<BigNumber>;
 
     createLendingPairWithProxy(
-      _pairVars: {
-        name: string;
-        symbol: string;
-        asset: string;
-        collateralAsset: string;
-        guardian: string;
-      },
-      _riskConfig: {
-        depositCollateralLimit: BigNumberish;
-        depositBorrowLimit: BigNumberish;
-        totalPairDebtLimit: BigNumberish;
-      },
+      _lendingPairName: string,
+      _lendingPairSymbol: string,
+      _pauseGuardian: string,
+      _collateralAsset: string,
       _borrowVars: {
         borrowAsset: string;
         initialExchangeRateMantissa: BigNumberish;
@@ -1039,19 +975,11 @@ export class LendingPairFactory extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    "createLendingPairWithProxy((string,string,address,address,address),(uint256,uint256,uint256),(address,uint256,uint256,uint256,uint256,address))"(
-      _pairVars: {
-        name: string;
-        symbol: string;
-        asset: string;
-        collateralAsset: string;
-        guardian: string;
-      },
-      _riskConfig: {
-        depositCollateralLimit: BigNumberish;
-        depositBorrowLimit: BigNumberish;
-        totalPairDebtLimit: BigNumberish;
-      },
+    "createLendingPairWithProxy(string,string,address,address,(address,uint256,uint256,uint256,uint256,address))"(
+      _lendingPairName: string,
+      _lendingPairSymbol: string,
+      _pauseGuardian: string,
+      _collateralAsset: string,
       _borrowVars: {
         borrowAsset: string;
         initialExchangeRateMantissa: BigNumberish;
@@ -1246,18 +1174,10 @@ export class LendingPairFactory extends Contract {
     ): Promise<PopulatedTransaction>;
 
     createLendingPairWithProxy(
-      _pairVars: {
-        name: string;
-        symbol: string;
-        asset: string;
-        collateralAsset: string;
-        guardian: string;
-      },
-      _riskConfig: {
-        depositCollateralLimit: BigNumberish;
-        depositBorrowLimit: BigNumberish;
-        totalPairDebtLimit: BigNumberish;
-      },
+      _lendingPairName: string,
+      _lendingPairSymbol: string,
+      _pauseGuardian: string,
+      _collateralAsset: string,
       _borrowVars: {
         borrowAsset: string;
         initialExchangeRateMantissa: BigNumberish;
@@ -1269,19 +1189,11 @@ export class LendingPairFactory extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    "createLendingPairWithProxy((string,string,address,address,address),(uint256,uint256,uint256),(address,uint256,uint256,uint256,uint256,address))"(
-      _pairVars: {
-        name: string;
-        symbol: string;
-        asset: string;
-        collateralAsset: string;
-        guardian: string;
-      },
-      _riskConfig: {
-        depositCollateralLimit: BigNumberish;
-        depositBorrowLimit: BigNumberish;
-        totalPairDebtLimit: BigNumberish;
-      },
+    "createLendingPairWithProxy(string,string,address,address,(address,uint256,uint256,uint256,uint256,address))"(
+      _lendingPairName: string,
+      _lendingPairSymbol: string,
+      _pauseGuardian: string,
+      _collateralAsset: string,
       _borrowVars: {
         borrowAsset: string;
         initialExchangeRateMantissa: BigNumberish;

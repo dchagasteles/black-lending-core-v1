@@ -26,11 +26,7 @@ interface LiquidationHelperInterface extends ethers.utils.Interface {
     "balancerVault()": FunctionFragment;
     "executeOperation(address[],uint256[],uint256[],address,bytes)": FunctionFragment;
     "flashLoanToLiquidate(address,address[],uint256)": FunctionFragment;
-    "owner()": FunctionFragment;
-    "renounceOwnership()": FunctionFragment;
-    "transferOwnership(address)": FunctionFragment;
     "warpVault()": FunctionFragment;
-    "withdraw(address)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -53,17 +49,7 @@ interface LiquidationHelperInterface extends ethers.utils.Interface {
     functionFragment: "flashLoanToLiquidate",
     values: [string, string[], BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "renounceOwnership",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "transferOwnership",
-    values: [string]
-  ): string;
   encodeFunctionData(functionFragment: "warpVault", values?: undefined): string;
-  encodeFunctionData(functionFragment: "withdraw", values: [string]): string;
 
   decodeFunctionResult(
     functionFragment: "ADDRESSES_PROVIDER",
@@ -85,25 +71,9 @@ interface LiquidationHelperInterface extends ethers.utils.Interface {
     functionFragment: "flashLoanToLiquidate",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "renounceOwnership",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "transferOwnership",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "warpVault", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
 
-  events: {
-    "LogWithdraw(address,address,uint256,uint256)": EventFragment;
-    "OwnershipTransferred(address,address)": EventFragment;
-  };
-
-  getEvent(nameOrSignatureOrTopic: "LogWithdraw"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
+  events: {};
 }
 
 export class LiquidationHelper extends Contract {
@@ -194,41 +164,9 @@ export class LiquidationHelper extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    owner(overrides?: CallOverrides): Promise<[string]>;
-
-    "owner()"(overrides?: CallOverrides): Promise<[string]>;
-
-    renounceOwnership(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    "renounceOwnership()"(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    transferOwnership(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    "transferOwnership(address)"(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     warpVault(overrides?: CallOverrides): Promise<[string]>;
 
     "warpVault()"(overrides?: CallOverrides): Promise<[string]>;
-
-    withdraw(
-      asset: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    "withdraw(address)"(
-      asset: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
   };
 
   ADDRESSES_PROVIDER(overrides?: CallOverrides): Promise<string>;
@@ -275,41 +213,9 @@ export class LiquidationHelper extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  owner(overrides?: CallOverrides): Promise<string>;
-
-  "owner()"(overrides?: CallOverrides): Promise<string>;
-
-  renounceOwnership(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  "renounceOwnership()"(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  transferOwnership(
-    newOwner: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  "transferOwnership(address)"(
-    newOwner: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   warpVault(overrides?: CallOverrides): Promise<string>;
 
   "warpVault()"(overrides?: CallOverrides): Promise<string>;
-
-  withdraw(
-    asset: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  "withdraw(address)"(
-    asset: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
 
   callStatic: {
     ADDRESSES_PROVIDER(overrides?: CallOverrides): Promise<string>;
@@ -356,55 +262,12 @@ export class LiquidationHelper extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    owner(overrides?: CallOverrides): Promise<string>;
-
-    "owner()"(overrides?: CallOverrides): Promise<string>;
-
-    renounceOwnership(overrides?: CallOverrides): Promise<void>;
-
-    "renounceOwnership()"(overrides?: CallOverrides): Promise<void>;
-
-    transferOwnership(
-      newOwner: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "transferOwnership(address)"(
-      newOwner: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     warpVault(overrides?: CallOverrides): Promise<string>;
 
     "warpVault()"(overrides?: CallOverrides): Promise<string>;
-
-    withdraw(asset: string, overrides?: CallOverrides): Promise<void>;
-
-    "withdraw(address)"(
-      asset: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
   };
 
-  filters: {
-    LogWithdraw(
-      to: string | null,
-      asset: string | null,
-      amount: null,
-      timestamp: null
-    ): TypedEventFilter<
-      [string, string, BigNumber, BigNumber],
-      { to: string; asset: string; amount: BigNumber; timestamp: BigNumber }
-    >;
-
-    OwnershipTransferred(
-      previousOwner: string | null,
-      newOwner: string | null
-    ): TypedEventFilter<
-      [string, string],
-      { previousOwner: string; newOwner: string }
-    >;
-  };
+  filters: {};
 
   estimateGas: {
     ADDRESSES_PROVIDER(overrides?: CallOverrides): Promise<BigNumber>;
@@ -451,41 +314,9 @@ export class LiquidationHelper extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    owner(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "owner()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    renounceOwnership(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    "renounceOwnership()"(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    transferOwnership(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    "transferOwnership(address)"(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     warpVault(overrides?: CallOverrides): Promise<BigNumber>;
 
     "warpVault()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    withdraw(
-      asset: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    "withdraw(address)"(
-      asset: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -537,40 +368,8 @@ export class LiquidationHelper extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "owner()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    renounceOwnership(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    "renounceOwnership()"(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    transferOwnership(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    "transferOwnership(address)"(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     warpVault(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "warpVault()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    withdraw(
-      asset: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    "withdraw(address)"(
-      asset: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
   };
 }

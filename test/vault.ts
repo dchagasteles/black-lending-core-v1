@@ -1,9 +1,11 @@
-import { ethers } from "hardhat";
-import { expect } from "chai";
+import { ethers, waffle } from "hardhat";
+import { Signer } from "ethers";
+import { expect, assert } from "chai";
 import { Vault, MockToken } from "../types";
 import {
   defaultLendingPairInitVars,
   IAccount,
+  LendingPairHelpers,
   runTestSuite,
   setupAndInitLendingPair,
   TestVars,

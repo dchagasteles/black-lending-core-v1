@@ -1,19 +1,15 @@
-import { HardhatUserConfig } from "hardhat/types";
+import {HardhatUserConfig} from 'hardhat/types';
 import { task } from "hardhat/config";
 import "hardhat-typechain";
-import "@nomiclabs/hardhat-waffle";
-import "@nomiclabs/hardhat-etherscan";
-import "solidity-coverage";
-// import "hardhat-contract-sizer";
-import "hardhat-tracer";
-import "hardhat-deploy";
-import "hardhat-deploy-ethers";
-// import "hardhat-gas-reporter";
-
-import "./tasks/deploy-pair.ts";
-
-require("dotenv").config();
-
+import "@nomiclabs/hardhat-waffle"
+import "@nomiclabs/hardhat-etherscan"
+import "solidity-coverage"
+// import "hardhat-contract-sizer"
+import "hardhat-tracer"
+import "hardhat-deploy"
+import 'hardhat-deploy-ethers'
+import './tasks/deploy-pair.ts'
+// import "hardhat-gas-reporter"
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
 task("accounts", "Prints the list of accounts", async (args, hre) => {
@@ -32,21 +28,20 @@ export default {
   networks: {
     hardhat: {
       accounts: {
-        mnemonic: "test test test test test test test test test test test junk",
-      },
+        mnemonic: "test test test test test test test test test test test junk"
+      }
     },
     kovan: {
-      // accounts: [process.env.PRIVATE_KEY],
       accounts: {
         mnemonic: process.env.MNEMONIC || "",
       },
-      url: `https://kovan.infura.io/v3/${INFURA_API_KEY}`,
+      url: `https://kovan.infura.io/v3/${INFURA_API_KEY}`
     },
     rinkeby: {
       accounts: {
-        mnemonic: process.env.MNEMONIC || "",
+        mnemonic: process.env.MNEMONIC || ""
       },
-      url: `https://rinkeby.infura.io/v3/${INFURA_API_KEY}`,
+      url: `https://rinkeby.infura.io/v3/${INFURA_API_KEY}`
     },
   },
   solidity: {
@@ -54,9 +49,9 @@ export default {
     settings: {
       optimizer: {
         enabled: true,
-        runs: 500,
-      },
-    },
+        runs: 500
+      }
+    }
   },
   typechain: {
     outDir: "types/",
@@ -70,12 +65,10 @@ export default {
   namedAccounts: {
     deployer: 0,
     // @TODO replace with proper address
-    blackSmithTeam: {
-      default: 1,
-      42: 0,
-    },
+    blackSmithTeam: 1,
     // @TODO replace with proper address
-    stakingContract: "0xc2edad668740f1aa35e4d8f227fb8e17dca888cd",
+    stakingContract: '0xc2edad668740f1aa35e4d8f227fb8e17dca888cd'
+
   },
   gasReporter: {
     enabled: true,
@@ -83,9 +76,9 @@ export default {
     // currency: 'USD',
   },
   etherscan: {
-    apiKey: "3TPDHK79F94RUEIFTJ1EY24ZTKT8AFAMPS",
+    apiKey: '3TPDHK79F94RUEIFTJ1EY24ZTKT8AFAMPS'
   },
   mocha: {
-    timeout: 9000000,
-  },
+    timeout: 9000000
+  }
 } as HardhatUserConfig;

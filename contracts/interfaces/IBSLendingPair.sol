@@ -13,7 +13,7 @@ interface IBSLendingPair {
         address indexed pair,
         address indexed asset,
         address indexed collateralAsset,
-        address guardian
+        address pauseGuardian
     );
 
     /**
@@ -23,18 +23,14 @@ interface IBSLendingPair {
      * @param asset The asset deposited in the pair
      * @param tokenReceipeint The user the receives the bsTokens
      * @param user The user that made the deposit
-     * @param amount The amount of asset tokens that are deposited
-     * @param shareAmount The amount of vault shares that are transferred
-     * @param amountOfWrappedMinted The amount of wrapped tokens minted
+     * @param amount The amount deposited
      **/
     event Deposit(
         address indexed pair,
         address indexed asset,
         address indexed tokenReceipeint,
         address user,
-        uint256 amount,
-        uint256 shareAmount,
-        uint256 amountOfWrappedMinted
+        uint256 amount
     );
 
     event Borrow(address indexed borrower, uint256 amount);
@@ -126,32 +122,20 @@ interface IBSLendingPair {
         uint256 totalReserves
     );
 
-    /**
-     * Emitted when update riskConfiguration
-     *
-     * @param depositCollateralLimit new deposit collateralAsset limit
-     * @param depositBorrowLimit new deposit borrowAsset limit
-     * @param totalPairDebtLimit new debt limit
-     * @param blockNumber number of blocks when event is triggered
-     **/
-    event UpdateRiskConfiguration(
-        uint256 depositCollateralLimit,
-        uint256 depositBorrowLimit,
-        uint256 totalPairDebtLimit,
-        uint256 blockNumber
-    );
-
     event InterestShortCircuit(uint256 blockNumber);
 
     event ActionPaused(uint8 action, uint256 timestamp);
     event ActionUnPaused(uint8 action, uint256 timestamp);
 
     function initialize(
-        DataTypes.LendingPairVars memory pariVars,
+        string memory _name,
+        string memory _symbol,
+        IERC20 _asset,
+        IERC20 _collateralAsset,
         DataTypes.BorrowAssetConfig calldata borrowConfig,
         IBSWrapperToken _wrappedCollateralAsset,
         IInterestRateModel _interestRate,
-        DataTypes.RiskConfiguration memory _riskConfig
+        address _pauseGuardian
     ) external;
 
     function asset() external view returns (IERC20);

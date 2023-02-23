@@ -26,7 +26,7 @@ const _abi = [
     name: "ADDRESSES_PROVIDER",
     outputs: [
       {
-        internalType: "contract IAaveLendingPoolAddressesProviderV2",
+        internalType: "contract ILendingPoolAddressesProviderV2",
         name: "",
         type: "address",
       },
@@ -39,7 +39,7 @@ const _abi = [
     name: "LENDING_POOL",
     outputs: [
       {
-        internalType: "contract IAaveLendingPoolV2",
+        internalType: "contract ILendingPoolV2",
         name: "",
         type: "address",
       },

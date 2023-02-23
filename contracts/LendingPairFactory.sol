@@ -180,18 +180,20 @@ contract LendingPairFactory is Pausable {
 
     /// @dev create lending pair with clones
     function createLendingPairWithProxy(
-        DataTypes.LendingPairVars memory _pairVars,
-        DataTypes.RiskConfiguration memory _riskConfig,
+        string memory _lendingPairName,
+        string memory _lendingPairSymbol,
+        address _pauseGuardian,
+        IERC20 _collateralAsset,
         BorrowLocalVars calldata _borrowVars
-    ) external whenNotPaused returns (address newLendingPair) {
-        require(_pairVars.guardian != address(0), "INV_G");
-        require(address(_pairVars.collateralAsset) != address(0), "INV_C");
+    ) external whenNotPaused onlyOwner returns (address newLendingPair) {
+        require(_pauseGuardian != address(0), "INV_G");
+        require(address(_collateralAsset) != address(0), "INV_C");
         require(address(_borrowVars.borrowAsset) != address(0), "INV_B");
         require(validInterestRateModels[address(_borrowVars.interestRateModel)] == true, "INV_I");
 
         WrappedAssetLocalVars memory wrappedAssetLocalVars;
 
-        bytes32 salt = keccak256(abi.encode(_pairVars.name, _pairVars.symbol, allPairs.length));
+        bytes32 salt = keccak256(abi.encode(_lendingPairName, _lendingPairSymbol, allPairs.length));
         newLendingPair = lendingPairImplementation.cloneDeterministic(salt);
 
         // initialize wrapper borrow asset
@@ -200,7 +202,7 @@ contract LendingPairFactory is Pausable {
                 borrowAssetWrapperImplementation,
                 newLendingPair,
                 address(_borrowVars.borrowAsset),
-                _pairVars.name,
+                _lendingPairName,
                 "BOR",
                 salt
             )
@@ -211,8 +213,8 @@ contract LendingPairFactory is Pausable {
             initWrapperTokensWithProxy(
                 collateralWrapperImplementation,
                 newLendingPair,
-                address(_pairVars.collateralAsset),
-                _pairVars.name,
+                address(_collateralAsset),
+                _lendingPairName,
                 "COL",
                 salt
             )
@@ -224,29 +226,31 @@ contract LendingPairFactory is Pausable {
                 debtTokenImplementation,
                 newLendingPair,
                 address(_borrowVars.borrowAsset),
-                _pairVars.name,
+                _lendingPairName,
                 "DEBT",
                 salt
             )
         );
 
-        DataTypes.BorrowAssetConfig memory borrowConfig =
-            DataTypes.BorrowAssetConfig(
-                _borrowVars.initialExchangeRateMantissa,
-                _borrowVars.reserveFactorMantissa,
-                _borrowVars.collateralFactor,
-                wrappedAssetLocalVars.wrappedBorrowAsset,
-                _borrowVars.liquidationFee,
-                wrappedAssetLocalVars.debtToken
-            );
+        DataTypes.BorrowAssetConfig memory borrowConfig = DataTypes.BorrowAssetConfig(
+            _borrowVars.initialExchangeRateMantissa,
+            _borrowVars.reserveFactorMantissa,
+            _borrowVars.collateralFactor,
+            wrappedAssetLocalVars.wrappedBorrowAsset,
+            _borrowVars.liquidationFee,
+            wrappedAssetLocalVars.debtToken
+        );
 
         // initialize lending pair
         IBSLendingPair(newLendingPair).initialize(
-            _pairVars,
+            _lendingPairName,
+            _lendingPairSymbol,
+            _borrowVars.borrowAsset,
+            _collateralAsset,
             borrowConfig,
             wrappedAssetLocalVars.wrappedCollateralAsset,
             _borrowVars.interestRateModel,
-            _riskConfig
+            _pauseGuardian
         );
 
         allPairs.push(newLendingPair);
