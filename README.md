@@ -1,4 +1,4 @@
-# WARP Finance
+# Lending & Borrowing protocol contracts
 
 # How it works
 
